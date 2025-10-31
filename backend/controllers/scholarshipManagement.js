@@ -9,12 +9,19 @@ cron.schedule('0 0 * * *', async () => { // 0=นาที 0=ชม 0=วัน(
 
     /* แปลงเป็น str เก็บเป็น 'YYYY-MM-DD'   */
     const today = new Date().toISOString().split("T")[0];
+
+    /* เปิดทุน เมื่อ start มากกว่า/เท่ากับวันนี้และ end น้อยกว่า/วันนี้ ให้ set 1 */
     await connection.query(
-        'UPDATE scholarship_info SET is_active = 0 WHERE end_date < ? AND is_active = 1',
-        [today]
+        `UPDATE scholarship_info SET is_active = 1 WHERE start_date <= ? AND end_date >= ?`,
+        [today, today]
+    )
+
+    /* ปิดทุน เมื่อทุน = 1 ถ้า end น้อยกว่าวันนี้ หรือ start มากกว่าวันนี้ ให้ set 0 */
+    await connection.query(
+        'UPDATE scholarship_info SET is_active = 0 WHERE (end_date < ? OR start_date > ?) AND is_active = 1',
+        [today], [today]
     )
     connection.release();
-
     console.log('Scholarships status updated');
 })
 
@@ -49,7 +56,7 @@ export const createScholarship = async (req, res) => {
         await connection.commit();
         res.status(201).json({ message: 'Created succesfully', SchId })
     } catch (err) {
-        console.log(err)
+        //console.log(err)
         return res.status(500).json({ message: 'Create is failed , Server error' })
     } finally {
         connection.release();
