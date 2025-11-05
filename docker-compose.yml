@@ -5,7 +5,7 @@ services:
     build: ./backend
     container_name: mern-backend
     ports:
-      - '5000:5000' #map port ในเครื่องกับ container
+      - '5001:5000' #map port ในเครื่องกับ container
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -19,7 +19,7 @@ services:
     build: ./frontend
     container_name: mern-frontend
     ports:
-    - '5173:5173'
+    - '5174:5173'
     volumes:
     - ./frontend:/app
     - /app/node_modules
@@ -31,7 +31,7 @@ services:
     image: mysql:latest
     container_name: mern-db
     ports:
-    - '3306:3306'
+    - '3307:3306'
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=project_db

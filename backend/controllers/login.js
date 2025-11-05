@@ -25,14 +25,22 @@ const login = async (req, res) => {
         const user = rows[0];
 
         /* เปรียบเทียบรหัสผ่าน */
-        const isMatch = await bcrypt.compare(password, user.password)
-        if (!isMatch) {
-            return res.status(401).json({ message: 'invalid credentials' })
+        // ❌ ลบบรรทัดนี้
+        // const isMatch = await bcrypt.compare(password, user.password)
+        // if (!isMatch) {
+        //     return res.status(401).json({ message: 'invalid credentials' })
+        // }
+
+        // ✅ แทนที่ด้วยแบบนี้
+        if (password !== user.password) {
+              return res.status(401).json({ message: 'invalid credentials' });
         }
 
         /* เก็บ token */
-        const token = jwt.sign({ user_id: user.user_id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "3h" });
-        await pool.execute(sqlSession, [user.user_id, token, true])
+        //const token = jwt.sign({ user_id: user.user_id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "3h" });
+        //await pool.execute(sqlSession, [user.user_id, token, true])
+        const token = jwt.sign({ user_id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "3h" });
+        await pool.execute(sqlSession, [user.id, token, true]);
 
 
         res.json({ message: 'Login successfully', token, role: user.role })

@@ -1,6 +1,12 @@
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 
+// ✅ โหลด env จากไฟล์ที่กำลังใช้จริง (local หรือ docker)
+const envFile =
+  process.env.NODE_ENV === "docker" ? "./.env" : "./.env.local";
+
+dotenv.config({ path: envFile });
+console.log(`🌍 [pool.js] Loaded env file: ${envFile}`);
 dotenv.config();
 
 const pool = mysql.createPool({
