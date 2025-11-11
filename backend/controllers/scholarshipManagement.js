@@ -1,5 +1,6 @@
 import pool from "../pool.js";
 import cron from "node-cron"; //กำหนดเวลาที่จะรันอัตโนมัติ
+import { sendLineMessage } from "../utils/lineNotify.js";
 
 let connection;
 
@@ -54,14 +55,42 @@ export const createScholarship = async (req, res) => {
         const [schResult] = await connection.execute(sqlAdd, [schoName, schoYear, quaId, type, source, startDate, endDate, desp, true])
         const SchId = schResult.insertId
         await connection.commit();
-        res.status(201).json({ message: 'Created succesfully', SchId })
+         /* ✅ หลัง commit สำเร็จ — ส่ง LINE แจ้งเตือน */
+         try {
+            // ดึงนักศึกษาที่ตรงคุณสมบัติ
+            const [students] = await pool.query(
+                `SELECT line_user_id, std_name FROM student_info 
+                 WHERE std_gpa >= ? 
+                 AND std_year = ? 
+                 AND std_income <= ?`,
+                [std_gpa, std_year, std_income]
+            );
+
+            console.log(`🎯 พบผู้มีสิทธิ์ ${students.length} คน`);
+
+            // ส่งแจ้งเตือนแต่ละคน
+            for (const std of students) {
+                if (!std.line_user_id) continue; // ข้ามคนที่ยังไม่ผูก LINE
+                const message = `📢 แจ้งเตือนทุนใหม่!\n"${schoName}" (${schoYear})\nเปิดรับสมัคร: ${startDate} - ${endDate}`;
+                await sendLineMessage(std.line_user_id, message);
+            }
+        } catch (notifyError) {
+            console.error("⚠️ แจ้งเตือน LINE ล้มเหลว:", notifyError);
+        }
+
+        res.status(201).json({ message: 'Created successfully', SchId });
+
     } catch (err) {
-        //console.log(err)
-        return res.status(500).json({ message: 'Create is failed , Server error' })
+        if (connection) await connection.rollback();
+        console.error(err);
+        return res.status(500).json({ message: 'Create failed, server error' });
     } finally {
         connection.release();
     }
 }
+
+      
+    
 
 /* แก้ไขทุน  */
 export const updateScholarship = async (req, res) => {

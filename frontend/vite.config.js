@@ -6,18 +6,18 @@ import flowbiteReact from "flowbite-react/plugin/vite";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss(), flowbiteReact()],
-  server:{
+  server: {
     host: true,
     port: 5173,
-    watch:{
+    watch: {
       usePolling: true
     }
   },
-  proxy:{
+  proxy: {
     '/api': {
-      target: 'http//backend:5000',
-      changeOrigin:true,
-      secure:false
+      target: 'http://backend:5000', // ✅ แก้ให้มี http://
+      changeOrigin: true,
+      secure: false
     }
   }
 })
