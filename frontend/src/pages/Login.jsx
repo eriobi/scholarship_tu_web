@@ -22,6 +22,7 @@ function Login() {
       localStorage.setItem('role',response.data.role);
 
       setMessage(response.data.message);
+      console.log(response.data);
       navigate('/')
     } catch (err) {
       if (err.response && err.response.data) {

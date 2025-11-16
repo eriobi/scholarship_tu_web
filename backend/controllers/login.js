@@ -37,8 +37,13 @@ const login = async (req, res) => {
        // }
 
         /* เก็บ token */
+<<<<<<< HEAD
         const token = jwt.sign({ user_id: user.user_id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "3h" });
         await pool.execute(sqlSession, [user.user_id, token, true]);
+=======
+        const token = jwt.sign({ user_id: user.user_id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "7d" });
+        await pool.execute(sqlSession, [user.user_id, token, true])
+>>>>>>> main
 
 
         res.json({ message: 'Login successfully', token, role: user.role })

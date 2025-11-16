@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import axiosInstance from "../axiosInstance";
 
 import ScholarshipTable from "../components/ScholarshipAdmin/ScholarshipTable";
@@ -11,10 +10,8 @@ import Modal from "../components/Modal";
 const ScholarshipsManagement = () => {
   const [scholarships, setScholarships] = useState([]);
 
-  /* pop up สำหรับแก้และเพิ่ม */
   const [isModalOpen, setIsModalOpen] = useState(false);
-  /* pop up ลบ */
-  const [deleteModel, setDeleteModel] = useState(false)
+  const [deleteModel, setDeleteModel] = useState(false);
 
   const [updateSch, setUpdateSch] = useState(null);
 
@@ -24,7 +21,7 @@ const ScholarshipsManagement = () => {
 
   const handleCloseModal = () => setIsModalOpen(false);
 
-  /* Callback function  ส่งไป ft อื่น เพื่อให้เรียกใช้ภายหลัง */
+  /* handle toggle active */
   const handleStatus = (id, newStatus) => {
     setScholarships((currentState) =>
       currentState.map((s) =>
@@ -33,7 +30,7 @@ const ScholarshipsManagement = () => {
     );
   };
 
-  /* get ทุน */
+  /* get */
   useEffect(() => {
     fetchScholarships();
   }, []);
@@ -48,16 +45,15 @@ const ScholarshipsManagement = () => {
     }
   };
 
-  /* เพิ่มทุน */
-
+  /* add */
   const handleAddClick = () => setIsModalOpen(true);
 
   const handleAdd = async (formData) => {
     try {
-      console.log(formData);
-      await axiosInstance.post(API_URL, formData);
+      console.log("Sending FormData:", [...formData.entries()]);
 
-      /* โหลดทุนใหม่ให้แสดงผล */
+      await axiosInstance.post("/admin/scholarship", formData); 
+      
       fetchScholarships();
       setIsModalOpen(false);
     } catch (err) {
@@ -65,7 +61,7 @@ const ScholarshipsManagement = () => {
     }
   };
 
-  /* แก้ไขทุน */
+  /* update */
   const handleUpdateClick = (scholarship) => {
     setUpdateSch(scholarship);
     setIsModalOpen(true);
@@ -75,37 +71,26 @@ const ScholarshipsManagement = () => {
     const id = updateSch?.scholarship_id;
     if (!id) return;
 
-    /* object ที่เก็บช้อมูลที่จะส่งไป backend  */
-    const payload = {
-      ...formData,
-      is_active:
-        formData.is_active !== undefined //มีการ update ไหม
-          ? Number(formData.is_active) // แปลง is_active เป็น number เพราะ react เก็บเป็น string แต่ backend ต้องการ number
-          : undefined,
-    };
-
     try {
-      /* Content-Type เป็น JSON เพื่อให้ backend อ่าน req.body  */
-      const res = await axiosInstance.patch(`${API_URL}/${id}`, payload, {
-        headers: { "Content-Type": "application/json" },
-      });
+      console.log("Updating FormData:", [...formData.entries()]);
 
-      fetchScholarships(); //โหลดตารางใหม่
-      setIsModalOpen(false); //ปิด popup
-      setUpdateSch(null); //reset form
+      await axiosInstance.patch(`/admin/scholarship/${id}`, formData);
+
+      fetchScholarships();
+      setIsModalOpen(false);
+      setUpdateSch(null);
     } catch (err) {
       console.log(err);
     }
   };
 
-  /* ลบทุน */
+  /* delete */
   const handleDelete = async () => {
     try {
-      console.log("Deleting IDs:", selectedId);
-      await axiosInstance.delete(`${API_URL}`, { data: { ids: selectedId } }); //ส่งเป็น object แทน id เพราะมีหลายตัว
-      setDeleteModel(false)
-      setSelectedId([])
-      fetchScholarships()
+      await axiosInstance.delete(`${API_URL}`, { data: { ids: selectedId } });
+      setDeleteModel(false);
+      setSelectedId([]);
+      fetchScholarships();
     } catch (err) {
       console.log(err);
     }
@@ -113,9 +98,7 @@ const ScholarshipsManagement = () => {
 
   return (
     <div>
-      <div>
-        <h2>จัดการทุนการศึกษา</h2>
-      </div>
+      <h2>จัดการทุนการศึกษา</h2>
 
       <tr>
         <td>
@@ -128,17 +111,20 @@ const ScholarshipsManagement = () => {
 
       <tr>
         <td>
-          <ActionButton action="delete" onClick={() => {
-              if (selectedId.length === 0){//ไว้เลือกทุนที่จะลบ
+          <ActionButton
+            action="delete"
+            onClick={() => {
+              if (selectedId.length === 0) {
                 alert("กรุณาเลือกทุนที่ต้องการลบ");
-                return
-              } 
-              setDeleteModel(true)
-          }}>ลบ</ActionButton>
+                return;
+              }
+              setDeleteModel(true);
+            }}
+          >
+            ลบ
+          </ActionButton>
         </td>
-        {/*         <td>
-          <ActionButton action="edit">แก้ไข</ActionButton>
-        </td> */}
+
         <td>
           <ActionButton action="add" onClick={handleAddClick}>
             เพิ่ม
@@ -146,14 +132,14 @@ const ScholarshipsManagement = () => {
         </td>
       </tr>
 
-      {/* add and edit */}
+      {/* modal add + edit */}
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <ScholarshipForm
-          onSubmit={(data) => {
+          onSubmit={(formData) => {
             if (updateSch) {
-              handleUpdate({ ...data, id: updateSch.scholarship_id });
+              handleUpdate(formData);
             } else {
-              handleAdd(data);
+              handleAdd(formData);
             }
           }}
           onCancel={handleCloseModal}
@@ -165,35 +151,34 @@ const ScholarshipsManagement = () => {
         <ScholarshipTable
           scholarships={scholarships}
           onEditClick={handleUpdateClick}
-          /* Callback function  ส่งไป ft อื่น เพื่อให้เรียกใช้ภายหลัง */
           onStatusChange={handleStatus}
           selectedId={selectedId}
           setSelectedId={setSelectedId}
         />
       </div>
 
-      {/* ยืนยันก่อนลบ */}
+      {/* confirm delete */}
       <Modal isOpen={deleteModel} onClose={() => setDeleteModel(false)}>
-         <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              ยืนยันการลบข้อมูล
-            </h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          ยืนยันการลบข้อมูล
+        </h3>
         <p className="text-gray-600 mb-6">
-              คุณต้องการลบทุน {selectedId.length} ทุนนี้หรือไม่?
+          ต้องการลบทุน {selectedId.length} ทุนนี้หรือไม่?
         </p>
-           <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setDeleteModel(false)}
-                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
-              >
-                ยกเลิก
-              </button>
-              <button
-                onClick={handleDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                ลบ
-              </button>
-            </div>
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={() => setDeleteModel(false)}
+            className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+          >
+            ยกเลิก
+          </button>
+          <button
+            onClick={handleDelete}
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            ลบ
+          </button>
+        </div>
       </Modal>
     </div>
   );

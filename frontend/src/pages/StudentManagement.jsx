@@ -18,8 +18,8 @@ const StudentManagement = () => {
   const fetchStudent = async () => {
     try {
       const res = await axiosInstance.get(API_URL);
-      setStudent(res.data);
-      console.log(res.data);
+      setStudent(res.data.students); //students = arr
+      console.log(res.data.students);
     } catch (err) {
       console.log(err);
     }
@@ -31,18 +31,18 @@ const StudentManagement = () => {
         <h2>จัดการนักศึกษา</h2>
       </div>
       
-      <tr>
+      <div>
         <td>
           <SocialButton action="line">ส่งข้อความผ่าน </SocialButton>
         </td>
         <td>
           <SocialButton action="gmail">ส่งข้อความผ่าน </SocialButton>
         </td>
-      </tr>
+      </div>
 
       <div className="flex justify-center items-center min-w-screen h-auto">
         <StudentTable
-          StudentTable={student}
+          studentData={student}
         />
       </div>
       

@@ -2,6 +2,8 @@ import pool from "../pool.js";
 import cron from "node-cron"; //กำหนดเวลาที่จะรันอัตโนมัติ
 import { sendLineMessage } from "../utils/lineNotify.js";
 
+import { upload } from "../uploadFile.js";
+
 let connection;
 
 /* update ทุน auto ว่าหมดเขตยัง */
@@ -29,7 +31,26 @@ cron.schedule('0 0 * * *', async () => { // 0=นาที 0=ชม 0=วัน(
 /* get ข้อมูลทุน */
 export const getScholarship = async (req, res) => {
     try {
-        const [row] = await pool.execute('SELECT * FROM scholarship_info')
+        const [row] = await pool.execute(
+            `SELECT 
+                s.scholarship_id,
+                s.scho_name,
+                s.scho_year,
+                s.scho_type,
+                s.scho_source,
+                s.start_date,
+                s.end_date,
+                s.scho_desp,
+                s.is_active,
+                s.is_delete,
+                q.qua_id,
+                q.std_year,
+                q.std_gpa,
+                q.std_income
+            FROM scholarship_info s
+            JOIN qualification q 
+            ON s.qualification = q.qua_id`
+        )
         res.json(row)
 
     } catch (err) {
@@ -41,19 +62,31 @@ export const getScholarship = async (req, res) => {
 export const createScholarship = async (req, res) => {
     const { schoName, schoYear, std_year, std_gpa, std_income, type, source, startDate, endDate, desp, is_active } = req.body
 
-    const sqlAdd = `INSERT INTO scholarship_info (scho_name,scho_year,qualification,scho_type,scho_source,start_date,end_date,scho_desp,is_active) VALUES (?,?,?,?,?,?,?,?,?)`
+    const sqlAdd = `INSERT INTO scholarship_info (scho_name,scho_year,qualification,scho_type,scho_source,start_date,end_date,scho_desp,scho_file,image_file,is_active) VALUES (?,?,?,?,?,?,?,?,?,?,?)`
     const quaAdd = `INSERT INTO qualification (std_year,std_gpa,std_income) VALUES (?,?,?)`
+
+    const pdf = req.files?.file ? req.files.file[0].filename : null;
+const image = req.files?.image ? req.files.image[0].filename : null;
+
     try {
         connection = await pool.getConnection();
         await connection.beginTransaction();
+
+        
+if (req.files) {
+  if (req.files.file) pdf = req.files.file[0].filename;
+  if (req.files.image) image = req.files.image[0].filename;
+}
 
         /* ตาราง qualification */
         const [quaResult] = await connection.execute(quaAdd, [std_year, std_gpa, std_income]);
         const quaId = quaResult.insertId;
 
         /* ตาราง Scholarship */
-        const [schResult] = await connection.execute(sqlAdd, [schoName, schoYear, quaId, type, source, startDate, endDate, desp, true])
+        const [schResult] = await connection.execute(sqlAdd, [schoName, schoYear, quaId, type, source, startDate, endDate, desp, pdf, image, true])
         const SchId = schResult.insertId
+
+
         await connection.commit();
          /* ✅ หลัง commit สำเร็จ — ส่ง LINE แจ้งเตือน */
          try {
@@ -94,70 +127,98 @@ export const createScholarship = async (req, res) => {
 
 /* แก้ไขทุน  */
 export const updateScholarship = async (req, res) => {
-    const { id } = req.params; /* ดึง id ผ่าน url  */
-    const updateData = req.body;/* ดึงข้อมูลที่ต้องการ update ที่ถูกส่งมาจาก req.body */
+  const { id } = req.params;
+  const updateData = req.body;
 
+  connection = await pool.getConnection();
+  await connection.beginTransaction();
+
+  try {
+     /* โหลดข้อมูลเดิม (ใช้ไฟล์เก่าถ้าไม่ได้อัปใหม่) */
+    const [oldRows] = await connection.execute(
+      "SELECT scho_file, image_file FROM scholarship_info WHERE scholarship_id = ?",
+      [id]
+    );
+
+    const old = oldRows[0];
+
+    /* ตั้งค่าไฟล์ */
+    let pdf = old?.scho_file || null;
+    let image = old?.image_file || null;
+
+    if (req.files?.file) pdf = req.files.file[0].filename;
+    if (req.files?.image) image = req.files.image[0].filename;
+
+   /*  mappedData ให้ col ที่ถูกส่งมาตรงกับ col ใน db */
     const mappedData = {
-        scho_name: updateData.schoName,
-        scho_year: updateData.schoYear,
-        scho_type: updateData.type,
-        scho_source: updateData.source,
-        scho_desp: updateData.desp,
-        start_date: updateData.startDate,
-        end_date: updateData.endDate,
-        is_active: updateData.is_active,
+      scho_name: updateData.schoName,
+      scho_year: updateData.schoYear,
+      scho_type: updateData.type,
+      scho_source: updateData.source,
+      scho_desp: updateData.desp,
+      start_date: updateData.startDate,
+      end_date: updateData.endDate,
+      is_active: updateData.is_active,
+      scho_file: pdf,
+      image_file: image
     };
 
-    connection = await pool.getConnection();
-    await connection.beginTransaction();
-
-    try {
-        /* ข้อมูลถูกส่งมาไหม ,คืนค่า object.keys array ของชื่อ key  */
-        if (!Object.keys(updateData).length) {
-            return res.status(404).json({ message: 'There is no information to update' })
-        }
-        const [rows] = await connection.query(
-            "SELECT is_active FROM scholarship_info WHERE scholarship_id = ?",
-            [id]
-        );
-        const oldValue = rows[0]?.is_active;
-        console.log("DB value:", oldValue);
-        console.log("New value:", mappedData.is_active);
-
-        /* รอรับค่า */
-        const fields = []
-        const values = []
-        /* loop */
-        for (const [key, value] of Object.entries(mappedData)) { //Object.entries คล้าย map
-            if (value !== undefined) {
-                fields.push(`${key} = ?`);
-                values.push(value);
-            }
-        }
-
-        /* update ข้อมูล */
-        const query = `UPDATE scholarship_info SET ${fields.join(',')} WHERE scholarship_id = ?` //fields.join = รวมเป็น string ,scho_id = ? ที่ id นั้นๆ
-        values.push(id);
-        const [result] = await connection.execute(query, values);
-
-        /* ไม่พบทุนที่ต้องการ update */
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Scholarship invalid' })
-        }
-        await connection.commit();
-        res.status(200).json({ message: 'updated succesfully' })
-
-    } catch (err) {
-        if (connection) await connection.rollback();
-        console.error(err);
-        if (!res.headersSent) {
-            return res.status(500).json({ message: 'Update failed, server error' });
-        }
-
-    } finally {
-        connection.release();
+    /* ถ้าไม่มี update ให้ผ่าน */
+    if (!Object.keys(updateData).length) {
+      return res.status(400).json({ message: "No data to update" });
     }
-}
+
+    /* สร้างให้รองรับ data */
+    const fields = [];
+    const values = [];
+
+    /* Object.entries แปลง mappedData แล้วคืนค่าเป็น key, value */
+    for (const [key, value] of Object.entries(mappedData)) {
+      if (value !== undefined) {
+        fields.push(`${key} = ?`);
+        values.push(value);
+      }
+    }
+
+    const query = `UPDATE scholarship_info SET ${fields.join(",")} WHERE scholarship_id = ?`;
+    values.push(id);
+
+    const [result] = await connection.execute(query, values);
+
+    /* update qualification ด้วย*/
+    if (updateData.std_year || updateData.std_gpa || updateData.std_income) {
+      const [oldSch] = await connection.execute(
+        "SELECT qualification FROM scholarship_info WHERE scholarship_id = ?",
+        [id]
+      );
+
+      const quaId = oldSch[0]?.qualification;
+
+      if (quaId) {
+        await connection.execute(
+          `UPDATE qualification SET std_year = ?, std_gpa = ?, std_income = ? WHERE qua_id = ?`,
+          [updateData.std_year, updateData.std_gpa, updateData.std_income, quaId]
+        );
+      }
+    }
+
+    /* affectedRows = rows มีการเปลี่ยนแปลงไหม */
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Scholarship not found" });
+    }
+
+    await connection.commit();
+    res.status(200).json({ message: "updated successfully" });
+
+  } catch (err) {
+    await connection.rollback();
+    console.error(err);
+    res.status(500).json({ message: "Update failed" });
+  } finally {
+    connection.release();
+  }
+};
+
 
 /* ลบทุน */
 export const deleteScholarship = async (req, res) => {
@@ -170,6 +231,6 @@ export const deleteScholarship = async (req, res) => {
         res.status(204).json({ message: 'deleted succesfully' })
 
     } catch (err) {
-        return res.status(500).json(err/* { message: 'delete is failed ,Server error' } */)
+        return res.status(500).json({ message: 'delete is failed ,Server error' })
     }
 }

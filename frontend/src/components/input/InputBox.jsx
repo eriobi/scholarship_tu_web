@@ -11,7 +11,7 @@ function InputBox({
   autoComplete,
   maxLength,
   pattern,
-  options,
+  options = [],
   value,
   onChange
 }) {
@@ -49,14 +49,14 @@ function InputBox({
       </label>
 
       {/* input แบบ option */}
-      {options ? (
+      {options.length > 0 ? (
         <>
           <select
             id={id}
             name={name}
-            
-            value={value ?? ""} 
-            onChange={setPattern} 
+            value={value} 
+            onChange={onChange}
+            required={required}
             className={clsx(
               "block w-full rounded-md px-3 py-2 text-base text-black bg-gray-50",
               hasError
@@ -65,12 +65,14 @@ function InputBox({
             )}
           >
             <option value="" className="text-sm/6 font-medium text-[#C2C2C2]">
-              เลือก{label}
+              กรุณาเลือก{label}
             </option>
-            {options.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
+            {options.map((opt,i) => (
+              typeof opt === "object" ? (
+                <option key={i} value={opt.value}>{opt.label}</option>
+              ):(
+                <option key={i} value={opt}>{opt}</option>
+              )
             ))}
           </select>
           {hasError && (
