@@ -4,6 +4,7 @@ import authRoutes from "./routes/authRoutes.js";
 import stdRoutes from "./routes/stdRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import dotenv from "dotenv";
+
 // 🔧 เลือกไฟล์ env อัตโนมัติ ตาม environment ที่รันอยู่
 const envFile =
   process.env.NODE_ENV === "docker" ? "./.env" : "./.env.local";
@@ -11,10 +12,12 @@ const envFile =
 dotenv.config({ path: envFile });
 console.log(`🌍 Loaded env file: ${envFile}`);
 
-const PORT = process.env.PORT || 5000;
+// ✅ สร้าง express app ก่อน แล้วค่อยใช้ cors
 const app = express();
 
-// ✅ อนุญาตทั้ง frontend container และ localhost (เผื่อเทสจากเครื่องจริง)
+const PORT = process.env.PORT || 5000;
+
+// ✅ อนุญาตทั้ง frontend container และ localhost
 const allowedOrigins = [
   "http://frontend:5173",
   "http://localhost:5173",

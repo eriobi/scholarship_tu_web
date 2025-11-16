@@ -1,11 +1,10 @@
-
 #backend
 services:
   backend: 
     build: ./backend
     container_name: mern-backend
     ports:
-      - '5001:5000' #map port ในเครื่องกับ container
+      - '5001:5000'
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -19,25 +18,46 @@ services:
     build: ./frontend
     container_name: mern-frontend
     ports:
-    - '5174:5173'
+      - '5174:5173'
     volumes:
-    - ./frontend:/app
-    - /app/node_modules
+      - ./frontend:/app
+      - /app/node_modules
     depends_on:
-    - backend
+      - backend
 
 #database
   db:
     image: mysql:latest
     container_name: mern-db
     ports:
-    - '3307:3306'
+      - '3308:3306'
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=MyRootPass123
       - MYSQL_DATABASE=project_db
     volumes:
-    - db_data:/var/lib/mysql
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
-# กำหนด volumes ที่ใช้
+# line bot
+  line-bot:
+    build: ./line-bot
+    container_name: mern-linebot
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./line-bot:/app
+      - /app/node_modules
+    env_file:
+      - ./line-bot/.env
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["./wait-for-it.sh", "db:3306", "-t", "40", "--", "npm", "start"]
+
+# volumes
 volumes:
   db_data:

@@ -9,6 +9,9 @@ dotenv.config({ path: envFile });
 console.log(`🌍 [pool.js] Loaded env file: ${envFile}`);
 dotenv.config();
 
+// ✅ ให้ backend ไปอ่าน .env ของ line-bot
+dotenv.config({ path: "./line-bot/.env" });
+
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
