@@ -65,6 +65,9 @@ function Navbar() {
 
         {token && role === "student" && (
           <>
+          <li>
+              <Link to="/user/noti">Noti</Link>
+            </li>
             <li>
               <Link to="/user/profile">Profile</Link>
             </li>
@@ -82,6 +85,9 @@ function Navbar() {
 
         {token && role === "admin" && (
           <>
+          <li>
+              <Link to="/admin/noti">noti</Link>
+            </li>
             <li>
               <Link to="/admin/dashboard">Dashboard</Link>
             </li>
