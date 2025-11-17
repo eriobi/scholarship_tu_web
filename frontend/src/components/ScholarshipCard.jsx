@@ -76,9 +76,10 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
     }
 
     try {
-      const res = await axiosInstance.post(`${API_URL}/${id}/bookmark`);
+      const res = await axiosInstance.post(`/api/scholarships/${id}/bookmark`);
+      
       console.log("Bookmark success", res.data);
-      onBookmark?.(scholarship_id); //? ถ้า onBookmark เป็น null ฟังก์ชั้นจะไม่ทำงาน
+      onBookmark?.(id); //? ถ้า onBookmark เป็น null จะไม่ทำงาน ,reload bookmark ใหม่
     } catch (err) {
       console.log(err);
     }
