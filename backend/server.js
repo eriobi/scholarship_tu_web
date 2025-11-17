@@ -9,7 +9,12 @@ import publicRoutes from './routes/publicRoutes.js'
 const PORT = process.env.PORT;
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: /^http:\/\/192\.168\.1\.\d+:5173$/,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 app.use(express.json()); //ให้รับข้อมูล json
 
 /* auth routes */
