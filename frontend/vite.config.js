@@ -13,11 +13,11 @@ export default defineConfig({
       usePolling: true
     }
   },
-  proxy:{
+ /*  proxy:{
     '/api': {
       target: 'http//backend:5000',
       changeOrigin:true,
       secure:false
     }
-  }
+  } */
 })
