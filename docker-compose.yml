@@ -1,4 +1,3 @@
-
 #backend
 services:
   backend: 
@@ -13,6 +12,8 @@ services:
       - ./backend/.env
     depends_on:
       - db
+    networks:
+      - mynetwork
 
 #frontend
   frontend:
@@ -25,6 +26,8 @@ services:
     - /app/node_modules
     depends_on:
     - backend
+    networks:
+      - mynetwork
 
 #database
   db:
@@ -37,6 +40,11 @@ services:
       - MYSQL_DATABASE=project_db
     volumes:
     - db_data:/var/lib/mysql
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
 
 # กำหนด volumes ที่ใช้
 volumes:
