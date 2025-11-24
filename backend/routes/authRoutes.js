@@ -18,4 +18,9 @@ router.post("/register", register);
 router.post("/login", login);
 router.post("/logout", logout);
 
+router.get("/logout", (req, res) => {
+  return res.json({ message: "Logged out" });
+});
+
+
 export default router;

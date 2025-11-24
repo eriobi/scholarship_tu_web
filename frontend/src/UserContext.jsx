@@ -1,33 +1,42 @@
+// src/UserContext.jsx
 import React, { createContext, useState, useEffect } from "react";
-
 import axiosInstance from "./axiosInstance";
 
-export const UserContext = createContext(); //createContext = ที่เก็บข้อมูลกลางจะได้ไม่ต้องเขียนหลาย jsx
+// ใส่ default value ให้ครบทุกตัว (กัน useContext แล้วเป็น undefined)
+export const UserContext = createContext({
+  user: null,
+  token: null,
+  role: null,
+  loading: true,
+  setUser: () => {},
+  setToken: () => {},
+  setRole: () => {},
+  logout: () => {},
+});
 
 function UserProvider({ children }) {
-  const [user, setUser] = useState(null); //เก็บข้อมูล user
-  const [token, setToken] = useState(null); //เก็บ token
-  const [role, setRole] = useState(null);// เก็บ role
-  const [loading, setLoading] = useState(true);// ไว้ verify Token ก่อน 
+  const [user, setUser] = useState(null);     // เก็บข้อมูล user
+  const [token, setToken] = useState(null);   // เก็บ token
+  const [role, setRole] = useState(null);     // เก็บ role
+  const [loading, setLoading] = useState(true); // ใช้ verify token ตอนเปิดเว็บ
 
-  /* ตรวจสอบ token ของจริงไหม/หมดอายุ/ถูกแก้ไขไหม */
+  /* โหลด token/role จาก localStorage ครั้งแรก */
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
+    const storedToken = localStorage.getItem("token");
+    const storedRole = localStorage.getItem("role");
 
-    if (token) {
-      setToken(token);
-      setRole(role);
-      verifyToken(token);
+    if (storedToken) {
+      setToken(storedToken);
+      setRole(storedRole);      // <<–– สำคัญมาก ตรงนี้ทำให้ role ไม่เป็น undefined
+      verifyToken(storedToken);
     } else {
       setLoading(false);
     }
   }, []);
 
-   /* ตรวจ token จาก server  */
+  /* ตรวจ token จาก server */
   const verifyToken = async (jwtToken) => {
     try {
-       /* ใช้ axiosInstance แทน axios */
       const res = await axiosInstance.get("/", {
         headers: { Authorization: `Bearer ${jwtToken}` },
       });
@@ -35,7 +44,7 @@ function UserProvider({ children }) {
       // สมมติ backend ส่ง user object กลับมา
       setUser(res.data.user);
     } catch (err) {
-      console.error("Authorization Error");
+      console.error("Authorization Error", err);
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       setUser(null);
@@ -46,11 +55,11 @@ function UserProvider({ children }) {
     }
   };
 
-  //set token ให้เป็น null เมื่อ log out
+  /* log out */
   const logout = async () => {
     try {
       const res = await axiosInstance.get("/logout");
-      console.log(res.data)
+      console.log(res.data);
     } catch (err) {
       console.log("Logout error:", err);
     } finally {
@@ -62,14 +71,22 @@ function UserProvider({ children }) {
     }
   };
 
-
-  return <div>
+  return (
     <UserContext.Provider
-      value={{ user, token, role, loading, setUser, setToken, setRole, logout }} // value = component ที่เข้าถึงอะไรได้บ้าง
+      value={{
+        user,
+        token,
+        role,
+        loading,
+        setUser,
+        setToken,
+        setRole,
+        logout,
+      }}
     >
       {children}
     </UserContext.Provider>
-  </div>;
+  );
 }
 
 export default UserProvider;

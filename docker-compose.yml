@@ -4,7 +4,11 @@ services:
     build: ./backend
     container_name: mern-backend
     ports:
+<<<<<<< Updated upstream
       - '5001:5000'
+=======
+      - '5001:5000' #map port ในเครื่องกับ container
+>>>>>>> Stashed changes
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -12,6 +16,23 @@ services:
       - ./backend/.env
     depends_on:
       - db
+<<<<<<< Updated upstream
+=======
+    networks:
+      - mynetwork
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_HOST=db           # ใช้ชื่อ service ของ MySQL
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+    networks:
+      - mynetwork             # ให้เข้า network เดียวกับ db/backend/frontend
+
+>>>>>>> Stashed changes
 
 #frontend
   frontend:
