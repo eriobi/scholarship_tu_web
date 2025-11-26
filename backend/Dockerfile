@@ -2,6 +2,8 @@ FROM node:22
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
+#เพิ่ม nodemon
+RUN npm install -g nodemon 
 COPY . .
 #COPY  .env ./
 # .sh executable ภายใน container
