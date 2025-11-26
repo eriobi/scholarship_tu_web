@@ -12,7 +12,6 @@ export const getAllScholarship = async (req, res) => {
                 s.end_date,
                 s.scho_desp,
                 s.is_active,
-                s.is_delete,
                 q.qua_id,
                 q.std_year,
                 q.std_gpa,
