@@ -1,37 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Logo from "../assets/CSLogo-Square-White.png";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Button from "../components/button/ButtonSummit";
 import InputBox from "../components/input/InputBox";
-
+import { UserContext } from "../UserContext";
 function Login() {
-
-  const [inputData, setInputData] = useState({email:'',password:''})
-  const [message, setMessage] = useState('');
+  const [inputData, setInputData] = useState({ email: "", password: "" });
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
-
+  const { setToken, setUser } = useContext(UserContext);
 
   const handleSummit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/login",inputData);
+      const response = await axios.post(
+        "http://localhost:5000/login",
+        inputData
+      );
 
       /* เก็บ token role ไว้ในเครื่อง */
       localStorage.setItem("token", response.data.token);
-      localStorage.setItem('role',response.data.role);
+      localStorage.setItem("role", response.data.role);
 
       setMessage(response.data.message);
       console.log(response.data);
-      navigate('/')
+      setToken(response.data.token);
+      setUser(response.data.user);
+      navigate("/");
     } catch (err) {
       if (err.response && err.response.data) {
         setMessage(err.response.data.message);
-    } else {
+      } else {
         setMessage("Server error or cannot reach API");
+      }
     }
-    }
-
   };
 
   return (
@@ -47,7 +50,6 @@ function Login() {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form onSubmit={handleSummit} className="space-y-6">
             <div>
-  
               <div className="mt-1">
                 <InputBox
                   id="email"
@@ -61,8 +63,8 @@ function Login() {
                   pattern=""
                   value={inputData.email}
                   onChange={(e) =>
-                setInputData({ ...inputData, email: e.target.value })
-              }
+                    setInputData({ ...inputData, email: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -71,24 +73,24 @@ function Login() {
               <div className="flex items-center justify-between"></div>
               <div className="mt-1">
                 <InputBox
-              id="password"
-              label="รหัสผ่าน"
-              type="password"
-              name="password"
-              placeholder=""
-              required
-              maxLength={10}
-              pattern=""
-              value={inputData.password}
+                  id="password"
+                  label="รหัสผ่าน"
+                  type="password"
+                  name="password"
+                  placeholder=""
+                  required
+                  maxLength={10}
+                  pattern=""
+                  value={inputData.password}
                   onChange={(e) =>
-                setInputData({ ...inputData, password: e.target.value })
-              }
-            />
+                    setInputData({ ...inputData, password: e.target.value })
+                  }
+                />
               </div>
             </div>
 
             <div className="mt-9">
-              <Button type="submit" primary={true} >
+              <Button type="submit" primary={true}>
                 เข้าสู่ระบบ
               </Button>
             </div>

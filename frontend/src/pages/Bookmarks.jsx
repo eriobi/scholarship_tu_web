@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 
 import axiosInstance from "../axiosInstance";
-import ScholarshipCard from "../components/ScholarshipCard";
+import ScholarshipCard from "../components/Scholarship/ScholarshipCard";
 import { UserContext } from "../UserContext";
 
 const Bookmarks = () => {
@@ -24,10 +24,12 @@ const Bookmarks = () => {
 
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">ทุนที่ Bookmark ไว้</h1>
+    <div className="p-4 bg-gray-50">
+      <h2 className="text-lg font-semibold text-center px-8 text-gray-900 p-8">
+        บุ๊กมาร์ก
+      </h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="flex flex-row flex-wrap gap-12 justify-center pb-8">
          {/* ถ้ายังไม่มีทุนที่ bookmark */}
         {cards.length === 0 ? (
           <p>ยังไม่มีทุนที่ bookmark ไว้</p>

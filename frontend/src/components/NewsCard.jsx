@@ -33,16 +33,15 @@ function NewsCard() {
 
 return (
     <div className="p-6 space-y-3">
-      <h1 className="text-xl font-bold mb-4">ข่าวประชาสัมพันธ์</h1>
 
-      {/* แทบ */}
+      {/* แถบ */}
       {news.map((content) => (
         <div
           key={content.news_id}
           onClick={() => openModal(content)}
-          className="w-full cursor-pointer relative flex flex-col my-6 bg-white shadow-sm border border-slate-200 rounded-lg"
+          className="w-full min-h-20 cursor-pointer relative flex items-center mt-2 mb-6 bg-white shadow-sm border border-slate-200 rounded-lg"
         >
-          <h2 className="p-4 font-semibold text-gray-800">
+          <h2 className="p-4 font-semibold text-gray-800 item-center text-base">
             {content.news_title}
           </h2>
         </div>

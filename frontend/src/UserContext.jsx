@@ -9,6 +9,7 @@ function UserProvider({ children }) {
   const [token, setToken] = useState(null); //เก็บ token
   const [role, setRole] = useState(null);// เก็บ role
   const [loading, setLoading] = useState(true);// ไว้ verify Token ก่อน 
+  
 
   /* ตรวจสอบ token ของจริงไหม/หมดอายุ/ถูกแก้ไขไหม */
   useEffect(() => {
@@ -28,7 +29,7 @@ function UserProvider({ children }) {
   const verifyToken = async (jwtToken) => {
     try {
        /* ใช้ axiosInstance แทน axios */
-      const res = await axiosInstance.get("/", {
+      const res = await axiosInstance.get("/navbar", {
         headers: { Authorization: `Bearer ${jwtToken}` },
       });
 

@@ -48,8 +48,8 @@ function ScholarshipTable({ scholarships, onEditClick, onStatusChange , selected
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg ">
       {/* หัวตาราง */}
-      <table className="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 ">
           {/* col */}
           <tr>
             {/* checkbox */}
@@ -60,7 +60,7 @@ function ScholarshipTable({ scholarships, onEditClick, onStatusChange , selected
                   type="checkbox"
                   onChange={toggleAll}
                   checked={selectedId.length === scholarships.length && scholarships.length > 0} //จำนวนที่ติ๊กถูกทั้งหมด = จำนวนที่ถูกติ๊กอย่างน้อย 1 ทุน
-                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:outline-none  dark:bg-gray-700 dark:border-gray-600"
                 />
                 <label htmlFor="checkbox-all-search" className="sr-only">
                   checkbox
@@ -113,7 +113,7 @@ function ScholarshipTable({ scholarships, onEditClick, onStatusChange , selected
                     type="checkbox"
                     checked={selectedId.includes(e.scholarship_id)}
                     onChange={() => toggleSingle(e.scholarship_id)}
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:outline-none dark:bg-gray-700 dark:border-gray-600"
                   />
                   <label htmlFor="checkbox-table-search-1" className="sr-only">
                     checkbox
@@ -191,7 +191,7 @@ function ScholarshipTable({ scholarships, onEditClick, onStatusChange , selected
                   />
                   {/* ปุม toggle */}
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none 
-                  peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:bg-blue-600 relative after:content-[''] 
+                 rounded-full peer dark:bg-gray-700 peer-checked:bg-blue-600 relative after:content-[''] 
                   after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:border-gray-300 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full"></div>
               
                 </label>

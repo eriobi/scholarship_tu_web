@@ -4,6 +4,7 @@ import { getScholarship, createScholarship, updateScholarship, deleteScholarship
 import { getStudent } from '../controllers/studentManagement.js'
 import { getNews, createNews, updateNews, deleteNews } from '../controllers/NewsManagement.js'
 import { upload , uploadFields } from "../uploadFile.js";
+import { getAdminDashboard } from "../controllers/adminDashboard.js";
 
 const router = express.Router();
 
@@ -22,6 +23,8 @@ router.get("/news", getNews);
 router.post("/news", createNews);
 router.patch("/news/:id", updateNews);
 router.delete('/news', deleteNews);
+
+router.get("/dashboard",verifyToken, getAdminDashboard);
 
 
 export default router;

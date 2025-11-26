@@ -1,37 +1,35 @@
-import React , { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 
 import axiosInstance from "../axiosInstance";
 
-import ActionButton from '../components/button/ActionButton'
-import SocialButton from '../components/button/SocialButton'
-import NewsTable from '../components/NewsManagement/NewsTable'
-import NewsForm from '../components/NewsManagement/NewsForm';
+import ActionButton from "../components/button/ActionButton";
+import SocialButton from "../components/button/SocialButton";
+import NewsTable from "../components/NewsManagement/NewsTable";
+import NewsForm from "../components/NewsManagement/NewsForm";
 import Modal from "../components/Modal";
 
-const NewsManagement= () => {
+const NewsManagement = () => {
+  const [news, setNews] = useState([]);
 
-  const[news,setNews] = useState([])
+  /* pop up สำหรับแก้และเพิ่ม */
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  /* pop up ลบ */
+  const [deleteModel, setDeleteModel] = useState(false);
 
-    /* pop up สำหรับแก้และเพิ่ม */
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    /* pop up ลบ */
-    const [deleteModel, setDeleteModel] = useState(false)
-  
-    const [updateNews, setUpdateNews] = useState(null);
-  
-    const [selectedId, setSelectedId] = useState([]);
+  const [updateNews, setUpdateNews] = useState(null);
 
-    const API_URL = "/admin/news";
-    const handleCloseModal = () => setIsModalOpen(false);
+  const [selectedId, setSelectedId] = useState([]);
 
-    const handleStatus = (id, newStatus) => {
+  const API_URL = "/admin/news";
+  const handleCloseModal = () => setIsModalOpen(false);
+
+  const handleStatus = (id, newStatus) => {
     setNews((currentState) =>
       currentState.map((n) =>
         n.news_id === id ? { ...n, is_active: newStatus } : n
-        )
-      );
-    };
-
+      )
+    );
+  };
 
   /* get ข่าว */
   useEffect(() => {
@@ -63,7 +61,7 @@ const NewsManagement= () => {
     }
   };
 
-    /* แก้ไข */
+  /* แก้ไข */
   const handleUpdateClick = (news) => {
     setUpdateNews(news);
     setIsModalOpen(true);
@@ -101,47 +99,21 @@ const NewsManagement= () => {
     try {
       console.log("Deleting IDs:", selectedId);
       await axiosInstance.delete(`${API_URL}`, { data: { ids: selectedId } }); //ส่งเป็น object แทน id เพราะมีหลายตัว
-      setDeleteModel(false)
-      setSelectedId([])
+      setDeleteModel(false);
+      setSelectedId([]);
       fetchNews();
     } catch (err) {
       console.log(err);
     }
   };
 
-
   return (
-    <div>
-      <h1>จัดการข่าวประชาสัมพันธ์</h1>
+    <div className="bg-gray-50 min-h-screen flex flex-col">
+     <h2 className="text-lg font-semibold text-center px-8 text-gray-900 p-8">
+        จัดการข่าวประชาสัมพันธ์
+      </h2>
 
-      <tr>
-        <td>
-          <SocialButton action="line">ส่งข้อความผ่าน </SocialButton>
-        </td>
-        <td>
-          <SocialButton action="gmail">ส่งข้อความผ่าน </SocialButton>
-        </td>
-      </tr>
-
-       <tr>
-        <td>
-          <ActionButton action="delete" onClick={() => {
-              if (selectedId.length === 0){//ไว้เลือกทุนที่จะลบ
-                alert("กรุณาเลือกข่าวที่ต้องการลบ");
-                return
-              } 
-              setDeleteModel(true)
-          }}>ลบ</ActionButton>
-        </td>
-
-        <td>
-          <ActionButton action="add" onClick={handleAddClick}>
-            เพิ่ม
-          </ActionButton>
-        </td>
-      </tr>
-
-     <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <NewsForm
           onSubmit={(data) => {
             if (updateNews) {
@@ -155,42 +127,64 @@ const NewsManagement= () => {
         />
       </Modal>
 
-      <div className="flex justify-center items-center min-w-screen h-auto">
-        <NewsTable
-          news={news}
-          onEditClick={handleUpdateClick}
-          onStatusChange={handleStatus}
-          selectedId={selectedId}
-          setSelectedId={setSelectedId}
-        />
+      <div className="flex justify-center w-full max-w-full h-auto">
+        <div className="w-[80%] mx-auto">
+
+          {/* ปุ่ม */}
+          <div className="justify-end flex gap-2 mb-1 items-center">
+            <SocialButton action="line">ส่งข้อความผ่าน </SocialButton>
+            <ActionButton
+              action="delete"
+              onClick={() => {
+                if (selectedId.length === 0) {
+                  //ไว้เลือกทุนที่จะลบ
+                  alert("กรุณาเลือกข่าวที่ต้องการลบ");
+                  return;
+                }
+                setDeleteModel(true);
+              }}
+            >
+              ลบ
+            </ActionButton>
+            <ActionButton action="add" onClick={handleAddClick}>
+              เพิ่ม
+            </ActionButton>
+          </div>
+          <NewsTable
+            news={news}
+            onEditClick={handleUpdateClick}
+            onStatusChange={handleStatus}
+            selectedId={selectedId}
+            setSelectedId={setSelectedId}
+          />
+        </div>
       </div>
 
       {/* ยืนยันก่อนลบ */}
       <Modal isOpen={deleteModel} onClose={() => setDeleteModel(false)}>
-         <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              ยืนยันการลบข้อมูล
-            </h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          ยืนยันการลบข้อมูล
+        </h3>
         <p className="text-gray-600 mb-6">
-              คุณต้องการลบ {selectedId.length} นี้หรือไม่?
+          คุณต้องการลบ {selectedId.length} นี้หรือไม่?
         </p>
-           <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setDeleteModel(false)}
-                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
-              >
-                ยกเลิก
-              </button>
-              <button
-                onClick={handleDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                ลบ
-              </button>
-            </div>
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={() => setDeleteModel(false)}
+            className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+          >
+            ยกเลิก
+          </button>
+          <button
+            onClick={handleDelete}
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            ลบ
+          </button>
+        </div>
       </Modal>
-      
     </div>
-  )
-}
+  );
+};
 
-export default NewsManagement
+export default NewsManagement;

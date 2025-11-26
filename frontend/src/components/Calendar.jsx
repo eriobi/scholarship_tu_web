@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { RiCheckboxBlankCircleFill } from "react-icons/ri";
 
 import axiosInstance from "../axiosInstance";
 
@@ -56,10 +58,10 @@ function Calender() {
 
     /* สร้างช่องให้เต็มเดือน */
     const totalCells = days.length; //วันทังหมด
-    const remainder = totalCells % 7; 
+    const remainder = totalCells % 7;
 
     if (remainder !== 0) {
-      const empty = 7 - remainder;  //วันที่เหลือ - 7 เพื่อที่จะให้รู้ว่าต้องสร้างกี่ช่อง
+      const empty = 7 - remainder; //วันที่เหลือ - 7 เพื่อที่จะให้รู้ว่าต้องสร้างกี่ช่อง
       for (let i = 0; i < empty; i++) {
         days.push(null);
       }
@@ -83,24 +85,24 @@ function Calender() {
 
   const days = generateDays();
 
-  /* สีทุนตาม type */
-  const colorType = (type) => {
-    if (type === "ทุนเหมาจ่าย")
-      return "bg-green-100 text-green-800  dark:bg-green-900 dark:text-green-300 w-25";
-    if (type === "ทุนระยะยาว")
-      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300 w-25";
-    return "bg-gray-200 text-gray-700";
+  const [popup, setPopup] = useState(null); // pop up เวลาชี้
+
+  /* จุดสีไว้แทนประเภททุน */
+  const dotColor = (type) => {
+    if (type === "ทุนเหมาจ่าย") return "bg-green-500";
+    if (type === "ทุนระยะยาว") return "bg-yellow-500";
+    return "bg-gray-400";
   };
 
   return (
-    <section className="relative bg-stone-50 py-24">
-      <div className="w-full max-w-7xl mx-auto px-6 lg:px-8 overflow-x-auto">
+    <section className="relative bg-stone-50 py-4 w-full">
+      <div className="w-full  px-2 overflow-x-auto shadow-md rounded-md py-2">
         {/* header */}
-        <div className="flex flex-col md:flex-row max-md:gap-3 items-center justify-between mb-5">
+        <div className="flex flex-col md:flex-row max-md:gap-3 items-center justify-between mb-5 ml-2">
           <div className="flex items-center gap-4">
             <h6 className="text-xl font-semibold text-gray-900">
-                {/* แสดงชื่อเดือน , 543 = พศ */}
-              {monthNames[currentMonth.getMonth()]}{" "} 
+              {/* แสดงชื่อเดือน , 543 = พศ za*/}
+              {monthNames[currentMonth.getMonth()]}{" "}
               {currentMonth.getFullYear() + 543}
             </h6>
           </div>
@@ -108,7 +110,7 @@ function Calender() {
           {/* ปุ่มเปลี่ยนเดือน */}
           <div className="flex items-center gap-3">
             <button
-              className="py-2 px-4 bg-gray-200 rounded-lg"
+              className="py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-xl border border-gray-200 hover:bg-gray-100 hover:text-purple-700 focus:z-10 focus:ring-0 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 "
               onClick={() =>
                 setCurrentMonth(
                   new Date(
@@ -119,11 +121,11 @@ function Calender() {
                 )
               }
             >
-              ← เดือนก่อน
+              ←
             </button>
 
             <button
-              className="py-2 px-4 bg-gray-200 rounded-lg"
+              className="py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-xl border border-gray-200 hover:bg-gray-100 hover:text-purple-700 focus:z-10 focus:ring-0 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 "
               onClick={() =>
                 setCurrentMonth(
                   new Date(
@@ -134,7 +136,7 @@ function Calender() {
                 )
               }
             >
-              เดือนถัดไป →
+              →
             </button>
           </div>
         </div>
@@ -159,8 +161,24 @@ function Calender() {
             return (
               <div
                 key={i}
-                className={`h-28 p-2 border border-gray-200 relative transition-all 
-                ${events.length ? "bg-purple-50" : "hover:bg-gray-100"}`}
+                className={`h-15 p-2 border border-gray-200 relative transition-all duration-300
+                ${
+                  events.length
+                    ? "bg-purple-50 hover:bg-purple-100"
+                    : "hover:bg-gray-100"
+                }`}
+                /* เมื่อ mouse ชี้ ให้ pop up ขึ้น */
+                onMouseEnter={(e) => {
+                  if (!events.length) return;
+                  const rect = e.currentTarget.getBoundingClientRect(); //currentTarget = hover getBoundingClientRect = วัดตำแหน่ง
+                  setPopup({
+                    /* ตำแหน่งที่ pop up โผล่ */
+                    x: rect.left + rect.width, //กำหนดให้ชิดซ้าย
+                    y: rect.bottom, //ขอบล่าง
+                    events,
+                  });
+                }}
+                onMouseLeave={() => setPopup(null)}
               >
                 {day && (
                   <>
@@ -168,19 +186,15 @@ function Calender() {
                       {day.getDate()}
                     </span>
 
-                    {/* ทุนที่อยู่ในวันนั้นๆ */}
-                    <div className="flex flex-col gap-1 mt-1 overflow-auto max-h-16">
-                        {/* ทุนมีการซ้อนกันให้แสดงซ้อน */}
+                    {/* จุดสี */}
+                    <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1"> {/* ชิดกรอบล่าง */}
                       {events.map((e) => (
-                        <div
+                        <span
                           key={e.scholarship_id}
-                          /* ให้แสดงสีจาม type */
-                          className={`text-[10px] rounded px-1 py-0.5 truncate border ${colorType(
+                          className={`w-1.5 h-1.5 rounded-full ${dotColor(
                             e.scho_type
                           )}`}
-                        >
-                          {e.scho_name}
-                        </div>
+                        ></span>
                       ))}
                     </div>
                   </>
@@ -189,7 +203,37 @@ function Calender() {
             );
           })}
         </div>
+        <div className="flex justify-center items-center gap-6 mt-2">
+          <div className="flex items-center gap-1">
+            <RiCheckboxBlankCircleFill className="text-green-500 text-xs" />
+            <span>= ทุนเหมาจ่าย</span>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <RiCheckboxBlankCircleFill className="text-yellow-500 text-xs" />
+            <span>= ทุนระยะยาว</span>
+          </div>
+        </div>
       </div>
+      {popup &&
+      /* ให้อยู่เหนือ layer ตาราง */
+        createPortal(
+          <div
+            className="fixed bg-white shadow-md p-2 rounded w-40 text-sm"
+            style={{
+              top: popup.y + 5, /* ให้โผล่มาใต้วัน 5px */
+              left: popup.x, 
+              transform: "translateX(-50%)", /* อยู่กลาง */
+              zIndex: 9999, //ให้ layers อยู่บนสุด
+            }}
+          >
+            {/* pop up แสดงชื่อทุน */}
+            {popup.events.map((e) => (
+              <p key={e.scholarship_id}>• {e.scho_name}</p>
+            ))}
+          </div>,
+          document.body
+        )}
     </section>
   );
 }

@@ -9,7 +9,7 @@ services:
       - ./backend:/app
       - /app/node_modules
     env_file:
-      - ./backend/.env
+      - ./backend/.env.docker
     depends_on:
       - db
     networks:
@@ -32,7 +32,7 @@ services:
 #database
   db:
     image: mysql:latest
-    container_name: mern-db
+    container_name: db
     ports:
     - '3306:3306'
     environment:
@@ -40,6 +40,7 @@ services:
       - MYSQL_DATABASE=project_db
     volumes:
     - db_data:/var/lib/mysql
+    - ./project_db.sql:/docker-entrypoint-initdb.d/project_db.sql
     networks:
       - mynetwork
 

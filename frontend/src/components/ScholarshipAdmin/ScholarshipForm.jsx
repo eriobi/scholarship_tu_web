@@ -75,9 +75,10 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
     <form
       onSubmit={handleSubmit}
       encType="multipart/form-data"
-      className="form-container"
+      className="grid grid-cols-1 md:grid-cols-2 gap-4 px-4 pb-4 w-full"
     >
-      <Input
+      <div className="md:col-span-2">
+        <Input
         id="ทุน"
         label="ชื่อทุนการศึกษา"
         type="text"
@@ -88,6 +89,8 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
         value={formData.schoName}
         onChange={handleChange}
       />
+      </div>
+      
       <Input
         id="ปี"
         label="ปีการศึกษา"
@@ -191,69 +194,85 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
         }
       />
 
-      <About
-        id="คำอธิบาย"
-        label="คำอธิบาย"
-        name="desp"
-        value={formData.desp}
-        onChange={handleChange}
-      />
-
-      <span>
-  <p>Upload Image</p>
-
-  {/* แสดงไฟล์เก่า */}
-  {formData.image && typeof formData.image === "string" && (
-    <div className="mb-2">
-      <img
-        src={`/uploads/${formData.image}`} // path ไฟล์เก่า
-        alt="Uploaded"
-        className="w-20 h-20 object-cover mb-1"
-      />
-      <p>Current file: {formData.image}</p>
-    </div>
-  )}
-
-  {/* input สำหรับไฟล์ใหม่ */}
-  <input
-    type="file"
-    accept="image/*"
-    onChange={(e) =>
-      setFormData({ ...formData, image: e.target.files[0] })
-    }
-  />
-</span>
-
-<span>
-  <p>Upload PDF</p>
-
-  {formData.file && typeof formData.file === "string" && (
-    <div className="mb-2">
-      <p>Current file: {formData.file}</p>
-      <a
-        href={`/uploads/${formData.file}`}
-        target="_blank"
-        rel="noreferrer"
-        className="text-blue-600 underline"
-      >
-        ดูไฟล์
-      </a>
-    </div>
-  )}
-
-  <input
-    type="file"
-    accept=".pdf"
-    onChange={(e) => setFormData({ ...formData, file: e.target.files[0] })}
-  />
-</span>
-
-      <div className="form-buttons">
-        <button type="submit">บันทึก</button>
-        <button type="button" onClick={onCancel}>
-          ยกเลิก
-        </button>
+      <div className="md:col-span-2">
+        <About
+          id="คำอธิบาย"
+          label="คำอธิบาย"
+          name="desp"
+          value={formData.desp}
+          onChange={handleChange}
+        />
       </div>
+
+      <span className="md:col-span-2">
+        <p>อัปโหลดภาพ</p>
+
+        {/* แสดงไฟล์เก่า */}
+        {formData.image && typeof formData.image === "string" && (
+          <div className="mb-2">
+            <img
+              src={`/uploads/${formData.image}`} // path ไฟล์เก่า
+              alt="Uploaded"
+              className="w-20 h-20 object-cover mb-1"
+            />
+            <p>Current file: {formData.image}</p>
+          </div>
+        )}
+
+        {/* input สำหรับไฟล์ใหม่ */}
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) =>
+            setFormData({ ...formData, image: e.target.files[0] })
+          }
+        />
+      </span>
+
+      <span className="md:col-span-2">
+        <p>อัปโหลด PDF</p>
+
+        {formData.file && typeof formData.file === "string" && (
+          <div className="mb-2">
+            <p>Current file: {formData.file}</p>
+            <a
+              href={`/uploads/${formData.file}`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-blue-600 underline"
+            >
+              ดูไฟล์
+            </a>
+          </div>
+        )}
+
+        <input
+          type="file"
+          accept=".pdf"
+          onChange={(e) =>
+            setFormData({ ...formData, file: e.target.files[0] })
+          }
+        />
+      </span>
+
+      <div className="md:col-span-2 grid grid-cols-2 gap-2 mt-4">
+        
+          <button
+            type="submit"
+            className="bg-purple-800 hover:bg-purple-900 w-full text-white px-8 py-2 rounded-lg font-medium shadow"
+          >
+            บันทึกข้อมูล
+          </button>
+        
+          <button
+            type="button"
+            onClick={onCancel}
+            className="w-full bg-gray-200 hover:bg-gray-300 px-8 py-2 rounded-lg font-medium"
+          >
+            ยกเลิก
+          </button>
+        </div>
+      
     </form>
   );
 }

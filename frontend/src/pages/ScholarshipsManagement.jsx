@@ -97,40 +97,10 @@ const ScholarshipsManagement = () => {
   };
 
   return (
-    <div>
-      <h2>จัดการทุนการศึกษา</h2>
-
-      <tr>
-        <td>
-          <SocialButton action="line">ส่งข้อความผ่าน </SocialButton>
-        </td>
-        <td>
-          <SocialButton action="gmail">ส่งข้อความผ่าน </SocialButton>
-        </td>
-      </tr>
-
-      <tr>
-        <td>
-          <ActionButton
-            action="delete"
-            onClick={() => {
-              if (selectedId.length === 0) {
-                alert("กรุณาเลือกทุนที่ต้องการลบ");
-                return;
-              }
-              setDeleteModel(true);
-            }}
-          >
-            ลบ
-          </ActionButton>
-        </td>
-
-        <td>
-          <ActionButton action="add" onClick={handleAddClick}>
-            เพิ่ม
-          </ActionButton>
-        </td>
-      </tr>
+    <div className='bg-gray-50 min-h-screen flex flex-col'>
+      <h2 className="text-lg font-semibold text-center text-gray-900 p-8">
+        จัดการทุนการศึกษา
+      </h2>
 
       {/* modal add + edit */}
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
@@ -147,14 +117,34 @@ const ScholarshipsManagement = () => {
         />
       </Modal>
 
-      <div className="flex justify-center items-center min-w-screen h-auto">
-        <ScholarshipTable
+      <div className="flex justify-center w-full max-w-full h-auto">
+        <div className="w-[80%] mx-auto">
+          <div className="justify-end flex gap-2 mb-1 items-center">
+            <SocialButton action="line">ส่งข้อความผ่าน </SocialButton>
+            <ActionButton
+            action="delete"
+            onClick={() => {
+              if (selectedId.length === 0) {
+                alert("กรุณาเลือกทุนที่ต้องการลบ");
+                return;
+              }
+              setDeleteModel(true);
+            }}
+          >
+            ลบ
+          </ActionButton>
+          <ActionButton action="add" onClick={handleAddClick}>
+            เพิ่ม
+          </ActionButton>
+          </div>
+          <ScholarshipTable
           scholarships={scholarships}
           onEditClick={handleUpdateClick}
           onStatusChange={handleStatus}
           selectedId={selectedId}
           setSelectedId={setSelectedId}
         />
+        </div>
       </div>
 
       {/* confirm delete */}
@@ -163,12 +153,12 @@ const ScholarshipsManagement = () => {
           ยืนยันการลบข้อมูล
         </h3>
         <p className="text-gray-600 mb-6">
-          ต้องการลบทุน {selectedId.length} ทุนนี้หรือไม่?
+          ต้องการลบทุน {selectedId.length} ทุนหรือไม่?
         </p>
         <div className="flex justify-end gap-3">
           <button
             onClick={() => setDeleteModel(false)}
-            className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+            className="px-4 py-2 bg-gray-300 text-gray-600 rounded hover:bg-gray-200"
           >
             ยกเลิก
           </button>

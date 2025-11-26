@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 17, 2025 at 11:46 AM
+-- Generation Time: Nov 25, 2025 at 10:41 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -93,7 +93,7 @@ CREATE TABLE `bookmark` (
 --
 
 INSERT INTO `bookmark` (`bookmark_id`, `student_id`, `scho_id`, `is_active`, `created_at`, `updated_at`) VALUES
-(64, 680741145, 8, 1, '2025-11-17 15:24:50', '2025-11-17 15:24:50');
+(66, 680741145, 9, 1, '2025-11-26 04:24:16', '2025-11-26 04:24:16');
 
 -- --------------------------------------------------------
 
@@ -138,7 +138,8 @@ CREATE TABLE `enroll` (
 --
 
 INSERT INTO `enroll` (`enroll_id`, `std_id`, `scho_id`, `qua_id`, `enroll_status`, `created_at`, `updated_at`) VALUES
-(6, 680741145, 8, 5, 1, '2025-11-14 18:51:05', '2025-11-14 18:51:05');
+(6, 680741145, 8, 5, 1, '2025-11-14 18:51:05', '2025-11-21 09:24:32'),
+(7, 680741145, 9, 6, 0, '2025-11-21 09:26:47', '2025-11-21 11:02:42');
 
 -- --------------------------------------------------------
 
@@ -181,8 +182,8 @@ CREATE TABLE `qualification` (
 --
 
 INSERT INTO `qualification` (`qua_id`, `std_year`, `std_gpa`, `std_income`) VALUES
-(5, 2, 3.00, '0'),
-(6, 1, 3.50, '100000');
+(5, 2, 3.00, '100000'),
+(6, 1, 3.00, '100000');
 
 -- --------------------------------------------------------
 
@@ -203,7 +204,6 @@ CREATE TABLE `scholarship_info` (
   `image_file` varchar(255) DEFAULT NULL,
   `scho_file` varchar(500) DEFAULT NULL COMMENT 'file_path',
   `is_active` tinyint(1) NOT NULL,
-  `is_delete` tinyint(1) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -212,9 +212,9 @@ CREATE TABLE `scholarship_info` (
 -- Dumping data for table `scholarship_info`
 --
 
-INSERT INTO `scholarship_info` (`scholarship_id`, `scho_name`, `scho_year`, `qualification`, `scho_type`, `scho_source`, `start_date`, `end_date`, `scho_desp`, `image_file`, `scho_file`, `is_active`, `is_delete`, `created_at`, `updated_at`) VALUES
-(8, 'ทุน test', 2568, 5, 'ทุนระยะยาว', 'ทุนภายใน', '2025-11-13', '2025-11-26', 'test ', '1763109390034-CSTU.png', '1763108548048-Screenshot 2025-05-07 065504.pdf', 1, 0, '2025-11-12 08:46:07', '2025-11-17 07:47:01'),
-(9, 'ทุนจำปา', 2568, 6, 'ทุนเหมาจ่าย', 'ทุนภายนอก', '2025-11-19', '2025-11-29', 'มีจิตอาสา', NULL, '', 1, 0, '2025-11-12 10:23:00', '2025-11-12 10:23:00');
+INSERT INTO `scholarship_info` (`scholarship_id`, `scho_name`, `scho_year`, `qualification`, `scho_type`, `scho_source`, `start_date`, `end_date`, `scho_desp`, `image_file`, `scho_file`, `is_active`, `created_at`, `updated_at`) VALUES
+(8, 'ทุน test', 2568, 5, 'ทุนระยะยาว', 'ทุนภายใน', '2025-11-13', '2025-11-26', 'test ', '1763109390034-CSTU.png', '1763108548048-Screenshot 2025-05-07 065504.pdf', 1, '2025-11-12 08:46:07', '2025-11-17 07:47:01'),
+(9, 'ทุนจำปา', 2568, 6, 'ทุนเหมาจ่าย', 'ทุนภายนอก', '2025-11-19', '2025-11-29', 'มีจิตอาสา', NULL, '', 1, '2025-11-12 10:23:00', '2025-11-12 10:23:00');
 
 -- --------------------------------------------------------
 
@@ -243,7 +243,6 @@ CREATE TABLE `student` (
   `std_year` int(2) UNSIGNED NOT NULL,
   `std_gpa` decimal(3,2) NOT NULL,
   `std_income` int(10) UNSIGNED NOT NULL,
-  `Bookmark` int(11) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -252,8 +251,8 @@ CREATE TABLE `student` (
 -- Dumping data for table `student`
 --
 
-INSERT INTO `student` (`std_id`, `user_id`, `std_name`, `std_lastname`, `std_year`, `std_gpa`, `std_income`, `Bookmark`, `created_at`, `updated_at`) VALUES
-(680741145, 2, 'กิติยาวี', 'ส่องแสง', 2, 3.25, 0, 0, '0000-00-00 00:00:00', '2025-11-14 18:22:46');
+INSERT INTO `student` (`std_id`, `user_id`, `std_name`, `std_lastname`, `std_year`, `std_gpa`, `std_income`, `created_at`, `updated_at`) VALUES
+(680741145, 2, 'กิติยาวี', 'ส่องแสง', 2, 3.25, 100000, '0000-00-00 00:00:00', '2025-11-26 04:19:26');
 
 -- --------------------------------------------------------
 
@@ -268,6 +267,7 @@ CREATE TABLE `users` (
   `password` varchar(100) NOT NULL,
   `decryption` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `line_id` varchar(50) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -277,9 +277,9 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `role`, `email`, `password`, `decryption`, `line_id`, `is_active`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'sirima.kav@gmail.com', '$2b$10$Nbtr29E0.o94jbgjvn01Y.rzkFg0K.s9DkRAI/nVCkXdOModJXD.m', '', '', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
-(2, 'student', 'daw@gmail.com', '$2b$10$hVcmpvMHF5638HHqPLX.KuFhayc3h.J3sYQQhB./iqukTSbmWYSNW', '', '', 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+INSERT INTO `users` (`user_id`, `role`, `email`, `password`, `decryption`, `line_id`, `phone`, `is_active`, `created_at`, `updated_at`) VALUES
+(1, 'admin', 'sirima.kav@gmail.com', '$2b$10$Nbtr29E0.o94jbgjvn01Y.rzkFg0K.s9DkRAI/nVCkXdOModJXD.m', '', '', NULL, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+(2, 'student', 'daw@gmail.com', '$2b$10$hVcmpvMHF5638HHqPLX.KuFhayc3h.J3sYQQhB./iqukTSbmWYSNW', '', '', '0999999', 1, '0000-00-00 00:00:00', '2025-11-26 04:37:19');
 
 -- --------------------------------------------------------
 
@@ -325,7 +325,15 @@ INSERT INTO `users_session` (`session_id`, `user_id`, `token`, `is_active`, `cre
 (32, 1, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6InNpcmltYS5rYXZAZ21haWwuY29tIiwiaWF0IjoxNzYzMDkxMTkyLCJleHAiOjE3NjM2OTU5OTJ9.JekFtIM2RAqKfVwfkaCUPoflcs5HQSHNl8QLIreGpyI', 1, '2025-11-14 10:33:12', '2025-11-14 03:33:12'),
 (33, 2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6ImRhd0BnbWFpbC5jb20iLCJpYXQiOjE3NjMxMTg4MjUsImV4cCI6MTc2MzcyMzYyNX0.xkCe0EJPGKJ6JoopQ9VOLTT-eZwYmfI0SaaJCZLGXuM', 1, '2025-11-14 18:13:45', '2025-11-14 11:13:45'),
 (34, 2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6ImRhd0BnbWFpbC5jb20iLCJpYXQiOjE3NjMxMjA3NTUsImV4cCI6MTc2MzcyNTU1NX0.Uactnro7RJIdN1m87ZeB1LpR0GjHzaZlMfsbObPRZLI', 1, '2025-11-14 18:45:55', '2025-11-14 11:45:55'),
-(35, 2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6ImRhd0BnbWFpbC5jb20iLCJpYXQiOjE3NjMzNTk3ODgsImV4cCI6MTc2Mzk2NDU4OH0.xh9Xm7nnKU1IFxEPbJDTbHYPn-69r3eR8KoPY93Uas4', 1, '2025-11-17 13:09:48', '2025-11-17 06:09:48');
+(35, 2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6ImRhd0BnbWFpbC5jb20iLCJpYXQiOjE3NjMzNTk3ODgsImV4cCI6MTc2Mzk2NDU4OH0.xh9Xm7nnKU1IFxEPbJDTbHYPn-69r3eR8KoPY93Uas4', 1, '2025-11-17 13:09:48', '2025-11-17 06:09:48'),
+(36, 1, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6InNpcmltYS5rYXZAZ21haWwuY29tIiwiaWF0IjoxNzYzNzIwNzcyLCJleHAiOjE3NjQzMjU1NzJ9.mc9Oa6SDE-dlGKegBO2-5Dbwugb_AvdIGiTlJ-7G4VY', 1, '2025-11-21 17:26:12', '2025-11-21 10:26:12'),
+(37, 2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6ImRhd0BnbWFpbC5jb20iLCJpYXQiOjE3NjM5NzExNzEsImV4cCI6MTc2NDU3NTk3MX0.tiSDOVGsCTK6X8Cl9fBq-KoATgWTipqz3FVFdOe8WGM', 1, '2025-11-24 14:59:31', '2025-11-24 07:59:31'),
+(38, 2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6ImRhd0BnbWFpbC5jb20iLCJpYXQiOjE3NjM5Nzg2NDYsImV4cCI6MTc2NDU4MzQ0Nn0.Xs2lNly1MIMR_Ed6xckpd6ccp0EEbljYciIlLIh42QA', 1, '2025-11-24 17:04:06', '2025-11-24 10:04:06'),
+(39, 2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6ImRhd0BnbWFpbC5jb20iLCJpYXQiOjE3NjM5ODE3NDMsImV4cCI6MTc2NDU4NjU0M30.MKcbApLvepR3ywBN0XQl-jxZD9lVf6LJDJHEsnoPdq4', 1, '2025-11-24 17:55:43', '2025-11-24 10:55:43'),
+(40, 2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6ImRhd0BnbWFpbC5jb20iLCJpYXQiOjE3NjM5ODE3ODIsImV4cCI6MTc2NDU4NjU4Mn0.lYLa3asT_Wzae_DItJ_5_zh_S22GE0VTBrI3I2XntkA', 1, '2025-11-24 17:56:22', '2025-11-24 10:56:22'),
+(41, 2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6ImRhd0BnbWFpbC5jb20iLCJpYXQiOjE3NjM5ODIzNzAsImV4cCI6MTc2NDU4NzE3MH0.IAcgmR_eXcxPF-dxwmivAORoK3ezBDLTg25z9m-QGAg', 1, '2025-11-24 18:06:10', '2025-11-24 11:06:10'),
+(42, 2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6ImRhd0BnbWFpbC5jb20iLCJpYXQiOjE3NjM5ODI2ODAsImV4cCI6MTc2NDU4NzQ4MH0.kLCeY6OBH-cU0JTH-4uXOjcvXMgLd_aDbOtwkHjugpQ', 1, '2025-11-24 18:11:20', '2025-11-24 11:11:20'),
+(43, 2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6ImRhd0BnbWFpbC5jb20iLCJpYXQiOjE3NjQwOTcyMzAsImV4cCI6MTc2NDcwMjAzMH0.nECesTS4YD6-0fGR_dCn1oJGzf23E6v1jw3K8DpHno4', 1, '2025-11-26 02:00:30', '2025-11-25 19:00:30');
 
 --
 -- Indexes for dumped tables
@@ -455,7 +463,7 @@ ALTER TABLE `admin_notification`
 -- AUTO_INCREMENT for table `bookmark`
 --
 ALTER TABLE `bookmark`
-  MODIFY `bookmark_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `bookmark_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `dashboard`
@@ -467,7 +475,7 @@ ALTER TABLE `dashboard`
 -- AUTO_INCREMENT for table `enroll`
 --
 ALTER TABLE `enroll`
-  MODIFY `enroll_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `enroll_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `news`
@@ -503,7 +511,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `users_session`
 --
 ALTER TABLE `users_session`
-  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- Constraints for dumped tables
