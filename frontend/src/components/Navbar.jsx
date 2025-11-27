@@ -8,7 +8,7 @@ import { IoIosNotifications } from "react-icons/io";
 import Avatar from "../components/Avatar";
 
 function NavbarTest() {
-  const { user, token, setUser } = useContext(UserContext);
+  const { user, token, setUser,setToken } = useContext(UserContext);
   const navigate = useNavigate();
   const [openDropdown, setOpenDropdown] = useState(false);
   const hoverTimer = useRef(null); //delay
@@ -43,8 +43,8 @@ function NavbarTest() {
     } catch (err) {
       console.log("Logout Error");
     } finally {
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
+      setUser(null);
+      setToken(null);
       navigate("/");
     }
   };
@@ -89,112 +89,113 @@ function NavbarTest() {
                 </Link>
               </div>
             )}
-            
+
             {token && (
               <>
-            <Link to={notiRoute}>
-              <IoNotificationsOutline size={20} className="text-[#4C1F7A]" />
-            </Link>
+                <Link to={notiRoute}>
+                  <IoNotificationsOutline
+                    size={20}
+                    className="text-[#4C1F7A]"
+                  />
+                </Link>
 
-            <div
-              className="relative"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
-              <button
-                type="button"
-                className="flex items-center  px-4 py-2 text-white hover:text-[#7c3f01]"
-              >
-                <Avatar name={displayName} size={35} />
-                <span className="font-medium px-2">{displayName}</span>
-              </button>
+                <div
+                  className="relative"
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <button
+                    type="button"
+                    className="flex items-center  px-4 py-2 text-white hover:text-[#7c3f01]"
+                  >
+                    <Avatar name={displayName} size={35} />
+                    <span className="font-medium px-2">{displayName}</span>
+                  </button>
 
-              {/* dropdown */}
-              <div
-                className={`absolute right-0 mt-2 w-48 z-60 bg-white rounded-lg shadow divide-y divide-gray-100 transition 
+                  {/* dropdown */}
+                  <div
+                    className={`absolute right-0 mt-2 w-48 z-60 bg-white rounded-lg shadow divide-y divide-gray-100 transition 
               ${openDropdown ? "opacity-100 visible" : "opacity-0 invisible"}`}
-              >
-                <ul className="py-2">
-                  {user?.role === "admin" && (
-                    <>
-                     
-                      <li>
-                        <Link
-                          to="/admin/dashboard"
-                          className="block px-4 py-2 hover:bg-gray-100"
-                        >
-                          Dashboard
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/admin/student"
-                          className="block px-4 py-2 hover:bg-gray-100"
-                        >
-                          จัดการนักศึกษา
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/admin/news"
-                          className="block px-4 py-2 hover:bg-gray-100"
-                        >
-                          จัดการข่าวประชาสัมพันธ์
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/admin/scholarship"
-                          className="block px-4 py-2 hover:bg-gray-100"
-                        >
-                          จัดการทุนการศึกษา
-                        </Link>
-                      </li>
-                      <li>
-                        <button
-                          onClick={handleLogout}
-                          className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                        >
-                          ออกจากระบบ
-                        </button>
-                      </li>
-                    </>
-                  )}
+                  >
+                    <ul className="py-2">
+                      {user?.role === "admin" && (
+                        <>
+                          <li>
+                            <Link
+                              to="/admin/dashboard"
+                              className="block px-4 py-2 hover:bg-gray-100"
+                            >
+                              Dashboard
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/admin/student"
+                              className="block px-4 py-2 hover:bg-gray-100"
+                            >
+                              จัดการนักศึกษา
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/admin/news"
+                              className="block px-4 py-2 hover:bg-gray-100"
+                            >
+                              จัดการข่าวประชาสัมพันธ์
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/admin/scholarship"
+                              className="block px-4 py-2 hover:bg-gray-100"
+                            >
+                              จัดการทุนการศึกษา
+                            </Link>
+                          </li>
+                          <li>
+                            <button
+                              onClick={handleLogout}
+                              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                            >
+                              ออกจากระบบ
+                            </button>
+                          </li>
+                        </>
+                      )}
 
-                  {user?.role === "student" && (
-                    <>
-                      
-                      <li>
-                        <Link
-                          to="/user/profile"
-                          className="block px-4 py-2 hover:bg-gray-100"
-                        >
-                          โปรไฟล์
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/user/bookmarks"
-                          className="block px-4 py-2 hover:bg-gray-100"
-                        >
-                          บุ๊กมาร์ก
-                        </Link>
-                      </li>
-                      <li>
-                        <button
-                          onClick={handleLogout}
-                          className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                        >
-                          ออกจากระบบ
-                        </button>
-                      </li>
-                    </>
-                  )}
-                </ul>
-              </div>
-            </div>
-            </>
-          )}
+                      {user?.role === "student" && (
+                        <>
+                          <li>
+                            <Link
+                              to="/user/profile"
+                              className="block px-4 py-2 hover:bg-gray-100"
+                            >
+                              โปรไฟล์
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              to="/user/bookmarks"
+                              className="block px-4 py-2 hover:bg-gray-100"
+                            >
+                              บุ๊กมาร์ก
+                            </Link>
+                          </li>
+                          <li>
+                            <button
+                              onClick={handleLogout}
+                              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                            >
+                              ออกจากระบบ
+                            </button>
+                          </li>
+                        </>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </>
+            )}
 
             {/* Mobile button */}
             <button

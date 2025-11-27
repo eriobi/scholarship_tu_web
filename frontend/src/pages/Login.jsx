@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import Logo from "../assets/CSLogo-Square-White.png";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../axiosInstance";
 import Button from "../components/button/ButtonSummit";
 import InputBox from "../components/input/InputBox";
 import { UserContext } from "../UserContext";
@@ -14,11 +14,7 @@ function Login() {
   const handleSummit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:5000/login",
-        inputData
-      );
-
+       const response = await axiosInstance.post("/login", inputData);
       /* เก็บ token role ไว้ในเครื่อง */
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);

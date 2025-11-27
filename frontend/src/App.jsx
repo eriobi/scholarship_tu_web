@@ -10,7 +10,8 @@ import Footer from "./components/Footer";
 import ProtectedRoute from "./ProtectedRoute";
 import Profile from "./pages/Profile";
 import Bookmarks from "./pages/Bookmarks";
-import Noti from "./pages/Noti";
+import NotiStudent from "./pages/NotiStudent";
+import NotiAdmin from "./pages/NotiAdmin"
 import NewsManagement from "./pages/NewsManagement";
 import ScholarshipsManagement from "./pages/ScholarshipsManagement";
 import StudentManagement from "./pages/StudentManagement";
@@ -36,14 +37,14 @@ function App() {
           
           {/* route ของ user */}
           <Route element={<ProtectedRoute roleRequired={"student"} />}>
-            <Route path="/user/noti" element={<Noti />} />
+            <Route path="/user/noti" element={<NotiStudent />} />
             <Route path="/user/profile" element={<Profile />} />
             <Route path="/user/bookmarks" element={<Bookmarks />} />
           </Route>
 
           {/* route ของ admin */}
           <Route element={<ProtectedRoute roleRequired={"admin"} />}>
-            <Route path="/admin/noti" element={<Noti />} />
+            <Route path="/admin/noti" element={<NotiAdmin />} />
             <Route path="/admin/news" element={<NewsManagement />} />
             <Route path="/admin/scholarship" element={<ScholarshipsManagement />} />
             <Route path="/admin/student" element={<StudentManagement />} />

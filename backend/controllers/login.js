@@ -15,6 +15,7 @@ const login = async (req, res) => {
 
     try {
         const [rows] = await pool.execute(sql, [email])
+        console.log("REQ BODY =", req.body);
 
         /* หา email */
         if (rows.length === 0) {
@@ -35,7 +36,10 @@ const login = async (req, res) => {
         await pool.execute(sqlSession, [user.user_id, token, true])
 
 
-        res.json({ message: 'Login successfully', token, role: user.role })
+        res.json({ message: 'Login successfully', token, role: user.role  })
+
+        console.log("Login request received");
+console.log(req.body)
 
 
     } catch (err) {

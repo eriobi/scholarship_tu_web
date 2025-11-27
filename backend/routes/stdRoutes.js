@@ -17,7 +17,4 @@ router.put("/enroll/toggle/:id", verifyToken, toggleEnrollStatus);
 router.get("/dashboard",verifyToken,getStdDashboard)
 
 
-
-
-
 export default router;
