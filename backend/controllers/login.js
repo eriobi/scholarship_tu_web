@@ -38,10 +38,6 @@ const login = async (req, res) => {
 
         res.json({ message: 'Login successfully', token, role: user.role  })
 
-        console.log("Login request received");
-console.log(req.body)
-
-
     } catch (err) {
 
         console.log(err)
