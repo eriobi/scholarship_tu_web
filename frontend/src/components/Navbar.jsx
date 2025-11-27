@@ -99,6 +99,7 @@ function NavbarTest() {
                   />
                 </Link>
 
+                {/* เมาส์ชี้ */}
                 <div
                   className="relative"
                   onMouseEnter={handleMouseEnter}
@@ -109,7 +110,8 @@ function NavbarTest() {
                     className="flex items-center  px-4 py-2 text-white hover:text-[#7c3f01]"
                   >
                     <Avatar name={displayName} size={35} />
-                    <span className="font-medium px-2">{displayName}</span>
+                    <span className="font-medium px-2">{user?.role === "admin" ? "เจ้าหน้าที่" : "นักศึกษา"}</span>
+                    <span className="font-medium ">{displayName}</span>
                   </button>
 
                   {/* dropdown */}
