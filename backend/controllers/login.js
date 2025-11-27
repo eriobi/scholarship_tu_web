@@ -15,8 +15,7 @@ const login = async (req, res) => {
 
     try {
         const [rows] = await pool.execute(sql, [email])
-        console.log("REQ BODY =", req.body);
-
+        
         /* หา email */
         if (rows.length === 0) {
             return res.status(401).json({ message: 'Email invalid' });
