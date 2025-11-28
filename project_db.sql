@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 27, 2025 at 04:53 PM
+-- Generation Time: Nov 28, 2025 at 03:01 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -98,28 +98,6 @@ INSERT INTO `bookmark` (`bookmark_id`, `student_id`, `scho_id`, `is_active`, `cr
 -- --------------------------------------------------------
 
 --
--- Table structure for table `dashboard`
---
-
-CREATE TABLE `dashboard` (
-  `dab_id` int(11) NOT NULL,
-  `std_id` int(11) NOT NULL,
-  `scho_id` int(11) NOT NULL,
-  `enroll_id` int(11) NOT NULL,
-  `std_all_total` int(100) NOT NULL,
-  `std_1_total` int(100) NOT NULL,
-  `std_2_total` int(100) NOT NULL,
-  `std_3_total` int(100) NOT NULL,
-  `std_4_total` int(100) NOT NULL,
-  `std_no_scho` int(100) NOT NULL,
-  `rate` decimal(3,2) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `enroll`
 --
 
@@ -161,8 +139,9 @@ CREATE TABLE `news` (
 --
 
 INSERT INTO `news` (`news_id`, `news_title`, `news_content`, `created_at`, `updated_at`, `is_active`) VALUES
-(16, 'test ', 'ประกาศ', '2025-11-05 06:27:48', '2025-11-05 06:27:48', 1),
-(17, 'test 2', 'สวัสดี', '2025-11-05 06:30:01', '2025-11-05 07:15:53', 1);
+(16, 'test ', 'ประกาศ', '2025-11-05 06:27:48', '2025-11-28 08:21:57', 0),
+(17, 'test 2', 'สวัสดี', '2025-11-05 06:30:01', '2025-11-28 08:21:57', 0),
+(19, 'ประกาศรายชื่อผู้สมควรได้รับทุนมูลนิธิอิออนประเทศไทย ประจำปีการศึกษา 2568', 'test', '2025-11-28 08:21:55', '2025-11-28 08:21:55', 1);
 
 -- --------------------------------------------------------
 
@@ -182,8 +161,11 @@ CREATE TABLE `qualification` (
 --
 
 INSERT INTO `qualification` (`qua_id`, `std_year`, `std_gpa`, `std_income`) VALUES
-(5, 2, 3.00, '100000'),
-(6, 1, 3.00, '100000');
+(5, 2, 3.00, 'ไม่ได้ระบุชัดเจน'),
+(6, 1, 3.00, '100000-200,000'),
+(7, 1, 3.00, 'ไม่ได้ระบุชัดเจน'),
+(8, 2, 3.60, 'ไม่ได้ระบุชัดเจน'),
+(9, 0, 0.00, '0');
 
 -- --------------------------------------------------------
 
@@ -213,8 +195,11 @@ CREATE TABLE `scholarship_info` (
 --
 
 INSERT INTO `scholarship_info` (`scholarship_id`, `scho_name`, `scho_year`, `qualification`, `scho_type`, `scho_source`, `start_date`, `end_date`, `scho_desp`, `image_file`, `scho_file`, `is_active`, `created_at`, `updated_at`) VALUES
-(8, 'ทุน test', 2568, 5, 'ทุนระยะยาว', 'ทุนภายใน', '2025-11-13', '2025-11-26', 'test ', '1763109390034-CSTU.png', '1763108548048-Screenshot 2025-05-07 065504.pdf', 1, '2025-11-12 08:46:07', '2025-11-26 15:23:32'),
-(9, 'ทุนจำปา', 2568, 6, 'ทุนเหมาจ่าย', 'ทุนภายนอก', '2025-11-19', '2025-11-29', 'มีจิตอาสา', NULL, NULL, 1, '2025-11-12 10:23:00', '2025-11-26 15:23:00');
+(8, 'ทุนสำหรับนักเรียนขาดแคลนทรัพย์', 2568, 5, 'ทุนระยะยาว', 'ทุนภายใน', '2025-11-13', '2025-11-22', 'test ', '1763109390034-CSTU.png', '1763108548048-Screenshot 2025-05-07 065504.pdf', 1, '2025-11-12 08:46:07', '2025-11-28 07:59:38'),
+(9, 'ทุนโครงการคาเอเดะ', 2568, 6, 'ทุนเหมาจ่าย', 'ทุนภายนอก', '2025-10-15', '2025-10-30', 'มีจิตอาสา', NULL, NULL, 1, '2025-11-12 10:23:00', '2025-11-28 08:11:22'),
+(10, 'ทุนมูลนิธิอิออนประเทศไทย', 2568, 7, 'ทุนระยะยาว', 'ทุนภายนอก', '2025-01-14', '2025-02-07', 'นักศึกษาปีที่ 1 ให้เกรดเฉลี่ยของมัธยมปลายแทน', NULL, '1764291234595-scholarshipOfAeon-2568.pdf', 1, '2025-11-28 07:45:56', '2025-11-28 08:10:17'),
+(11, 'รับสมัครทุน บริษัท ซีคอน จำกัด ', 2568, 8, 'ทุนระยะยาว', 'ทุนภายนอก', '2025-01-14', '2025-02-07', '-ไม่เป็นนักศึกษาที่ได้รับทุนการศึกษาอื่นใด หรือกำลังอยู่ระหว่างรอรับทุน\r\n-เป็นนักศึกษาที่มีจิตอาสา มีคุณธรรม แต่ขาดแคลนทุนทรัพย์ในการศึกษา มีความประพฤติเรียบร้อย และไม่เคย\r\nถูกลงโทษทางวินัยเป็นนักศึกษาที่มีจิตอาสา มีคุณธรรม แต่ขาดแคลนทุนทรัพย์ในการศึกษา ม', NULL, '1764292185687-scholarshipOfSeacon-2025.pdf', 1, '2025-11-28 08:09:45', '2025-11-28 08:09:45'),
+(12, 'สมัครขอรับทุนภัยพิบัติ ปีการศึกษา 2568', 2568, 9, 'ทุนเหมาจ่าย', 'ทุนภายใน', '2025-01-01', '2025-12-31', '1. เป็นนักศึกษา มธ. ระดับปริญญาตรี\r\n2. นักศึกษา/ผู้ปกครองมีภูมิลำเนาในพื้นที่ประสบภัยพิบัติ\r\n3. มีความประพฤติดี\r\n4. ได้รับการรับรองจากหน่วยงานราชการ ว่าพื้นที่ที่อยู่อาศัยดังกล่าวอยู่ในเขตภัยพิบัติ', NULL, '1764292471311-20250218 à¹à¸à¸à¸à¸­à¸£à¹à¸¡à¸à¸­à¸à¸¸à¸à¸ à¸±à¸¢à¸à¸´à¸à¸±à¸à¸´.pdf', 1, '2025-11-28 08:14:31', '2025-11-28 08:14:31');
 
 -- --------------------------------------------------------
 
@@ -297,6 +282,14 @@ CREATE TABLE `users_session` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Dumping data for table `users_session`
+--
+
+INSERT INTO `users_session` (`session_id`, `user_id`, `token`, `is_active`, `created_at`, `updated_at`) VALUES
+(56, 1, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6InNpcmltYS5rYXZAZ21haWwuY29tIiwiaWF0IjoxNzY0MjYwMjEwLCJleHAiOjE3NjQ4NjUwMTB9.spti8J07X8xvkwnUMgY0b9wAQepN_hCn1N4lDLwJJLU', 1, '2025-11-27 23:16:50', '2025-11-27 16:16:50'),
+(59, 1, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6InNpcmltYS5rYXZAZ21haWwuY29tIiwiaWF0IjoxNzY0Mjk0OTE3LCJleHAiOjE3NjQ4OTk3MTd9.9qt2z4w92esEnbxnqtc5_Tsc4qcp3CkGbosjPMOROIc', 1, '2025-11-28 08:55:17', '2025-11-28 01:55:17');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -330,15 +323,6 @@ ALTER TABLE `bookmark`
   ADD PRIMARY KEY (`bookmark_id`),
   ADD KEY `Student_id` (`student_id`),
   ADD KEY `scho_id` (`scho_id`);
-
---
--- Indexes for table `dashboard`
---
-ALTER TABLE `dashboard`
-  ADD PRIMARY KEY (`dab_id`),
-  ADD KEY `std_id` (`std_id`),
-  ADD KEY `scho_id` (`scho_id`),
-  ADD KEY `enroll_id` (`enroll_id`);
 
 --
 -- Indexes for table `enroll`
@@ -427,12 +411,6 @@ ALTER TABLE `bookmark`
   MODIFY `bookmark_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
--- AUTO_INCREMENT for table `dashboard`
---
-ALTER TABLE `dashboard`
-  MODIFY `dab_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `enroll`
 --
 ALTER TABLE `enroll`
@@ -442,19 +420,19 @@ ALTER TABLE `enroll`
 -- AUTO_INCREMENT for table `news`
 --
 ALTER TABLE `news`
-  MODIFY `news_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `news_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `qualification`
 --
 ALTER TABLE `qualification`
-  MODIFY `qua_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `qua_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `scholarship_info`
 --
 ALTER TABLE `scholarship_info`
-  MODIFY `scholarship_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `scholarship_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `std_notification`
@@ -472,7 +450,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `users_session`
 --
 ALTER TABLE `users_session`
-  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- Constraints for dumped tables
@@ -503,14 +481,6 @@ ALTER TABLE `admin_notification`
 ALTER TABLE `bookmark`
   ADD CONSTRAINT `bookmark_std` FOREIGN KEY (`student_id`) REFERENCES `student` (`std_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `scho_id` FOREIGN KEY (`scho_id`) REFERENCES `scholarship_info` (`scholarship_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `dashboard`
---
-ALTER TABLE `dashboard`
-  ADD CONSTRAINT `dashboard_ibfk_2` FOREIGN KEY (`std_id`) REFERENCES `student` (`std_id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `dashboard_ibfk_3` FOREIGN KEY (`scho_id`) REFERENCES `scholarship_info` (`scholarship_id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `enroll` FOREIGN KEY (`enroll_id`) REFERENCES `enroll` (`enroll_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `enroll`
