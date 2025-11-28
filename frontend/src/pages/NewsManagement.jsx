@@ -71,20 +71,19 @@ const NewsManagement = () => {
     const id = updateNews?.news_id;
     if (!id) return;
 
-    /* object ที่เก็บช้อมูลที่จะส่งไป backend  */
-    const payload = {
-      ...formData,
-      is_active:
-        formData.is_active !== undefined //มีการ update ไหม
-          ? Number(formData.is_active) // แปลง is_active เป็น number เพราะ react เก็บเป็น string แต่ backend ต้องการ number
-          : undefined,
-    };
+    const form = new FormData();
+    form.append("news_title", formData.get("news_title"));
+    form.append("news_content", formData.get("news_content"));
+    form.append("is_active", updateNews.is_active);
+
+    /* ถ้ามีไฟล์ใหม่ให้ append */
+    if (formData.get("news_file")) {
+      form.append("news_file", formData.get("news_file"));
+    }
 
     try {
       /* Content-Type เป็น JSON เพื่อให้ backend อ่าน req.body  */
-      const res = await axiosInstance.patch(`${API_URL}/${id}`, payload, {
-        headers: { "Content-Type": "application/json" },
-      });
+      await axiosInstance.patch(`${API_URL}/${id}`, form);
 
       fetchNews(); //โหลดตารางใหม่
       setIsModalOpen(false); //ปิด popup
@@ -109,7 +108,7 @@ const NewsManagement = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
-     <h2 className="text-lg font-semibold text-center px-8 text-gray-900 p-8">
+      <h2 className="text-lg font-semibold text-center px-8 text-gray-900 p-8">
         จัดการข่าวประชาสัมพันธ์
       </h2>
 
@@ -117,7 +116,7 @@ const NewsManagement = () => {
         <NewsForm
           onSubmit={(data) => {
             if (updateNews) {
-              handleUpdate({ ...data, id: updateNews.news_id });
+              handleUpdate(data);
             } else {
               handleAdd(data);
             }
@@ -129,7 +128,6 @@ const NewsManagement = () => {
 
       <div className="flex justify-center w-full max-w-full h-auto">
         <div className="w-[80%] mx-auto">
-
           {/* ปุ่ม */}
           <div className="justify-end flex gap-2 mb-1 items-center">
             <SocialButton action="line">ส่งข้อความผ่าน </SocialButton>

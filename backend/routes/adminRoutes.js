@@ -2,7 +2,7 @@ import express from "express";
 import verifyToken from "../middleware/verifyToken.js";
 import { getScholarship, createScholarship, updateScholarship, deleteScholarship } from '../controllers/scholarshipManagement.js'
 import { getStudent } from '../controllers/studentManagement.js'
-import { getNews, createNews, updateNews, deleteNews } from '../controllers/NewsManagement.js'
+import { getNews, createNews, updateNews, deleteNews , uploadNewsFile } from '../controllers/NewsManagement.js'
 import { upload , uploadFields } from "../uploadFile.js";
 import { getAdminDashboard } from "../controllers/adminDashboard.js";
 
@@ -20,8 +20,8 @@ router.delete('/scholarship', deleteScholarship);
 
 /* จัดการข่าว */
 router.get("/news", getNews);
-router.post("/news", createNews);
-router.patch("/news/:id", updateNews);
+router.post("/news", uploadNewsFile, createNews);
+router.patch("/news/:id", uploadNewsFile, updateNews);
 router.delete('/news', deleteNews);
 
 router.get("/dashboard",verifyToken, getAdminDashboard);

@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-
+import path from "path";
 import authRoutes from './routes/authRoutes.js'
 import stdRoutes from './routes/stdRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
@@ -28,6 +28,7 @@ app.use(cors({
   credentials: true
 }))
 
+
 if (process.env.NODE_ENV === "docker") {
   dotenv.config({ path: ".env.docker" });
   console.log("Running with .env.docker");
@@ -43,6 +44,7 @@ if (process.env.NODE_ENV === "docker") {
 });
  */
 app.use(express.json()); //ให้รับข้อมูล json
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads"))); //ให้ load ไฟล์ได้
 
 /* auth routes */
 app.use('/', authRoutes);
