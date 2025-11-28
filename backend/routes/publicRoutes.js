@@ -17,6 +17,6 @@ router.post("/scholarships/:id/enroll", verifyRoleStd, enroll);
 
 router.get("/news",getNews)
 
-router.get("/scholarships/:id/stats",verifyToken, getScholarshipStats);
+router.get("/scholarships/:id/stats", getScholarshipStats);
 
 export default router;

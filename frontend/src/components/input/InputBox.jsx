@@ -13,9 +13,8 @@ function InputBox({
   pattern,
   options = [],
   value,
-  onChange
+  onChange,
 }) {
-
   const [touched, setTouched] = useState(false);
   const hasError = required && touched && String(value || "").trim() === ""; //เช็คว่ากรอกข้อมูลหรือยัง
 
@@ -32,12 +31,30 @@ function InputBox({
     /* e.target.value ค่าที่ input เข้ามา */
     const valPatter = e.target.value;
     /* copy and paste ได้ */
-    onChange(e);
-    /* .test('') เข็คว่าตรงกับค่าใน () หรือไม่*/
-    if (regex.test(valPatter)) {
-      /* return ค่ากลับ */
+    const val = e.target.value;
+
+     
+    if (pattern === "text") {
       onChange(e);
+      return;
     }
+
+    /*  number */
+    if (pattern === "number") {
+      if (/^\d*$/.test(val) || val === "") {
+        onChange(e);
+      }
+      return;
+    }
+
+    /* ทศนิยม */
+    if (pattern === "decimal") {
+      if (/^\d*(\.\d{0,2})?$/.test(val) || val === "") {
+        onChange(e);
+      }
+      return;
+    }
+    onChange(e);
   };
 
   return (
@@ -56,7 +73,7 @@ function InputBox({
           <select
             id={id}
             name={name}
-            value={value} 
+            value={value}
             onChange={onChange}
             required={required}
             className={clsx(
@@ -69,13 +86,17 @@ function InputBox({
             <option value="" className="text-sm/6 font-medium text-[#C2C2C2]">
               กรุณาเลือก{label}
             </option>
-            {options.map((opt,i) => (
+            {options.map((opt, i) =>
               typeof opt === "object" ? (
-                <option key={i} value={opt.value}>{opt.label}</option>
-              ):(
-                <option key={i} value={opt}>{opt}</option>
+                <option key={i} value={opt.value}>
+                  {opt.label}
+                </option>
+              ) : (
+                <option key={i} value={opt}>
+                  {opt}
+                </option>
               )
-            ))}
+            )}
           </select>
           {hasError && (
             <p className="text-red-500 text-sm mt-1">กรุณากรอก {label}</p>
@@ -90,7 +111,7 @@ function InputBox({
             name={name}
             placeholder={placeholder}
             autoComplete={autoComplete}
-            value={value ?? "" }
+            value={value ?? ""}
             maxLength={maxLength}
             onChange={setPattern}
             onBlur={() => setTouched(true)}

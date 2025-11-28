@@ -20,24 +20,36 @@ function Register() {
     password: "",
   });
 
-  const [message,setMessage] = useState('')
-  const navigate = useNavigate()
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
-  const handleSummit = async (e) =>{
+  const handleSummit = async (e) => {
     e.preventDefault();
-    try{
-      const response = await axios.post('http://localhost:5000/register',inputData)
-      setMessage(response.data.message)
-      navigate('/login')
-    }catch(err){
+
+    if (inputData.password !== confirmPassword) {
+      setError("รหัสผ่านไม่ตรงกัน");
+      return;
+    }
+    setError("");
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/register",
+        inputData
+      );
+      setMessage(response.data.message);
+      navigate("/login");
+    } catch (err) {
       if (err.response && err.response.data) {
         setMessage(err.response.data.message);
-    } else {
+      } else {
         setMessage("Server error or cannot reach API");
+      }
     }
-    }
-  }
+  };
 
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState(""); // เอาไว้โชว์ error
 
   return (
     <div className="min-h-full min-w-full bg-gradient-to-tr from-amber-200 via-amber-200 to-red-400 flex items-center justify-center px-6 py-12 ">
@@ -48,6 +60,9 @@ function Register() {
             ลงทะเบียน
           </h2>
         </div>
+        {message && (
+          <p className="text-center text-red-600 mt-2 text-sm">{message}</p>
+        )}
 
         <form onSubmit={handleSummit} className="space-y-6 space-x-6">
           <div className="grid gap-6 mt-4 md:grid-cols-2">
@@ -102,7 +117,6 @@ function Register() {
               type="number"
               name="year"
               placeholder=""
-              required
               autoComplete="off"
               options={["1", "2", "3", "4"]}
               value={inputData.year}
@@ -113,7 +127,7 @@ function Register() {
             <InputBox
               id="gpa"
               label="gpa"
-              type="decimal"
+              type="text"
               name="gpa"
               placeholder="3.00"
               required
@@ -132,7 +146,11 @@ function Register() {
               name="income"
               placeholder=""
               autoComplete="off"
-              options={["1", "2", "3", "4"]}
+              options={[
+                { label: "ต่ำกว่า 100,000", value: "0-100000" },
+                { label: "100,000-200,000", value: "100000-200000" },
+                { label: "200,000 ขึ้นไป", value: "200001" },
+              ]}
               value={inputData.income}
               onChange={(e) =>
                 setInputData({ ...inputData, income: e.target.value })
@@ -184,7 +202,7 @@ function Register() {
                 setInputData({ ...inputData, password: e.target.value })
               }
             />
-            {/* <InputBox
+            <InputBox
               id="confirmPassword"
               label="ยืนยันรหัสผ่าน"
               type="password"
@@ -192,16 +210,18 @@ function Register() {
               placeholder=""
               required
               maxLength={10}
-              pattern=""
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-            /> */}
+            />
+
+            {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
           </div>
 
-           <div className="mt-9">
-              <Button type = 'submit' primary={true}>ลงทะเบียน</Button>
-            </div>
-
+          <div className="mt-9">
+            <Button type="submit" primary={true}>
+              ลงทะเบียน
+            </Button>
+          </div>
         </form>
 
         <p className="mt-5 text-center text-sm/6 text-gray-400">

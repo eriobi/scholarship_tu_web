@@ -171,7 +171,7 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
           { label: "ไม่ได้ระบุชัดเจน", value: "ไม่ได้ระบุชัดเจน" },
           { label: "ต่ำกว่า 100,000 บาท", value: "0-100,000" },
           { label: "100,000 - 200,000 บาท", value: "100000-200,000" },
-          { label: "200,000 ขึ้นไป", value: "300,000" },
+          { label: "200,000 ขึ้นไป", value: "200,001" },
         ]}
       />
 

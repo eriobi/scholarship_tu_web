@@ -3,70 +3,76 @@ import pool from "../pool.js";
 let connection = await pool.getConnection();
 
 export const getScholarshipStats = async (req, res) => {
-    const schoId = req.params.id;
-    const userId = req.user?.user_id || null;
+    const { id } = req.params;
+    let userId = null;
+
+    /* ตรวจสอบว่าผู้ใช้ล็อกอินหรือยัง ที่ไม่ได้ใช้ verifyToken เพราะให้คนทั่วไปดูได้*/
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (token) {
+        try {
+            const jwtVerify = jwt.verify(token, process.env.JWT_SECRET);
+            userId = jwtVerify.user_id; // เก็บ user_id ไว้ใช้เช็คคุณสมบัติกรณีเป็นนศ
+        } catch (err) {
+            // ไม่ต้อง return error 
+            userId = null;
+        }
+    }
 
     try {
-        /* จำนวนที่ enroll */
-        const [[{ total }]] = await connection.execute(
-            `SELECT COUNT(*) AS total
-            FROM enroll
-            WHERE scho_id = ?`,
-            [schoId]
+        // สถิติโดยรวมของทุนนี้
+        const [[stats]] = await connection.execute(
+            `SELECT 
+          SUM(CASE WHEN enroll_status = 1 THEN 1 ELSE 0 END) AS approved,
+          SUM(CASE WHEN enroll_status = 0 THEN 1 ELSE 0 END) AS rejected,
+          COUNT(*) AS total
+        FROM enroll
+        WHERE scho_id = ?`,
+            [id]
         );
 
-        /* จำนวนที่ได้รับทุน */
-        const [[{ approved }]] = await connection.execute(
-            `SELECT COUNT(*) AS approved
-            FROM enroll
-            WHERE scho_id = ? AND enroll_status = 1`,
-            [schoId]
-        );
+        const percent =
+            stats.total > 0 ? ((stats.approved / stats.total) * 100).toFixed(2) : 0;
 
-        const rejected = total - approved;
-        const percent = total > 0 ? ((approved / total) * 100).toFixed(2) : 0;
+        let qualify = null;
 
-        /* เช็คเงื่อนไขว่าตรงกันไหม */
-        let qualifyResult = null;
-
+        /* ถ้าล็อกอินและเป็น student → เช็คคุณสมบัติ */
         if (userId) {
             const [[student]] = await connection.execute(
-                `SELECT std_id, std_year, std_gpa, std_income
-                 FROM student WHERE user_id = ?`,
+                "SELECT std_year, std_gpa, std_income FROM student WHERE user_id = ?",
                 [userId]
             );
 
-            if (student) {
-                const [[req]] = await connection.execute(
-                `SELECT q.std_year AS req_year,
-                  q.std_gpa AS req_gpa,
-                  q.std_income AS req_income
-                FROM scholarship_info s
-                JOIN qualification q ON s.qualification = q.qua_id
-                WHERE s.scholarship_id = ?`,
-                    [schoId]
-                );
+            const [[req]] = await connection.execute(
+                `SELECT q.std_year, q.std_gpa, q.std_income 
+            FROM qualification q
+            JOIN scholarship_info s ON s.qualification = q.qua_id
+            WHERE s.scholarship_id = ?`,
+                [id]
+            );
 
-                qualifyResult = {
-                    year_ok: student.std_year >= req.req_year,
-                    gpa_ok: student.std_gpa >= req.req_gpa,
+            if (student && req) {
+                qualify = {
+                    year_ok: student.std_year >= req.std_year,
+                    gpa_ok: student.std_gpa >= req.std_gpa,
                     income_ok:
-                        parseInt(student.std_income) <= parseInt(req.req_income),
+                        student.std_income <= parseInt(req.std_income.replace(/\D/g, ""), 10),
                 };
             }
         }
 
         return res.json({
-            total,
-            approved,
-            rejected,
+            approved: stats.approved || 0,
+            rejected: stats.rejected || 0,
+            total: stats.total || 0,
             percent,
-            qualify: qualifyResult, /* ถ้าไม่ใช้นศ return null */
+            qualify, // ถ้าไม่ล็อกอิน เป็น null
         });
-
     } catch (err) {
         console.log(err);
-        return res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({ message: "Server error" });
+
     } finally {
         connection.release()
     }

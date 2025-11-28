@@ -27,5 +27,8 @@ dist-ssr
 mysql_data/
 *.sock
 
+backend/uploads/*
+!backend/uploads/.gitkeep
+
 # Environment files
 #*.env
