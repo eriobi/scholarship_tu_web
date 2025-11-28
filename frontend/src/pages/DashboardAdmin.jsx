@@ -72,16 +72,44 @@ const DashboardAdmin = () => {
   };
 
   /* bar */
-  const barChart = {
-    labels: data.currentYearLevelStats.map((x) => `ปี ${x.std_year}`),
-    datasets: [
-      {
-        label: `จำนวนผู้ได้รับทุน ปี ${data.current_year}`,
-        data: data.currentYearLevelStats.map((x) => x.total),
-        backgroundColor: "#2196F3",
+  const yearLevels = [1, 2, 3, 4];
+  const barColors = ["#2196F3", "#4CAF50", "#FF9800", "#E91E63"];
+
+const barChart = {
+  labels: ["จำนวนผู้ได้รับทุน"],   // ให้เป็นแกนเดียว เพราะเราใช้หลาย dataset
+  datasets: yearLevels.map((year, index) => {
+    const found = data.currentYearLevelStats.find(
+      (x) => parseInt(x.std_year) === year
+    );
+
+    return {
+      label: `นักศึกษาชั้นปี ${year}`,   // แสดงเป็น legend
+      data: [found ? found.total : 0],     // ถ้ามีค่าเดียว
+      backgroundColor: barColors[index],   // สีตรงกับปีนั้นๆ
+    };
+  }),
+  options: {
+  plugins: {
+    legend: {
+      position: "bottom",
+      labels: {
+        usePointStyle: true,
+        pointStyle: "rect",
+        padding: 20,
+        boxWidth: 16,
+        boxHeight: 16,
       },
-    ],
-  };
+    },
+  },
+    scales: {
+      x: { grid: { display: false } },
+      y: {
+        beginAtZero: true,
+        grid: { color: "#e5e7eb" },
+      },
+    },
+  },
+};
 
   /* line */
   const lineChart = {
@@ -99,7 +127,7 @@ const DashboardAdmin = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen flex flex-col p-10">
+    <div className="bg-gray-50 min-h-screen flex flex-col p-6">
       <h2 className="text-lg font-semibold text-center text-gray-900 p-8">
         Dashboard
       </h2>
@@ -197,6 +225,7 @@ const DashboardAdmin = () => {
             ))}
           </div>
         </div>
+
         {/* pie */}
         <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
           <h2 className="font-semibold mb-4">สัดส่วนการได้รับทุน</h2>
@@ -206,13 +235,13 @@ const DashboardAdmin = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         {/* Bar */}
         <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
           <h2 className="font-semibold mb-4">
             จำนวนผู้ได้รับทุน ปี {data.current_year}
           </h2>
-          <Bar data={barChart} />
+          <Bar data={barChart} options={barChart.options} />
         </div>
 
         {/* line */}
@@ -221,7 +250,6 @@ const DashboardAdmin = () => {
           <Line data={lineChart} />
         </div>
       </div>
-
     </div>
   );
 };

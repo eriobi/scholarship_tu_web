@@ -14,7 +14,7 @@ function Login() {
   const handleSummit = async (e) => {
     e.preventDefault();
     try {
-       const response = await axiosInstance.post("/login", inputData);
+      const response = await axiosInstance.post("/login", inputData);
       /* เก็บ token role ไว้ในเครื่อง */
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
@@ -28,7 +28,7 @@ function Login() {
       if (err.response && err.response.data) {
         setMessage(err.response.data.message);
       } else {
-        setMessage("Server error or cannot reach API");
+        setMessage("Server error");
       }
     }
   };
@@ -42,6 +42,10 @@ function Login() {
             เข้าสู่ระบบ
           </h2>
         </div>
+
+        {message && (
+          <p className="text-center text-red-600 mt-2 text-sm">{message}</p>
+        )}
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form onSubmit={handleSummit} className="space-y-6">

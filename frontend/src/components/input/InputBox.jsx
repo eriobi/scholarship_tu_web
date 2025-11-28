@@ -31,6 +31,8 @@ function InputBox({
   const setPattern = (e) => {
     /* e.target.value ค่าที่ input เข้ามา */
     const valPatter = e.target.value;
+    /* copy and paste ได้ */
+    onChange(e);
     /* .test('') เข็คว่าตรงกับค่าใน () หรือไม่*/
     if (regex.test(valPatter)) {
       /* return ค่ากลับ */

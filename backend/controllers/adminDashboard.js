@@ -74,6 +74,7 @@ export const getAdminDashboard = async (req, res) => {
       ORDER BY s.scho_year DESC, st.std_year ASC
     `);
 
+    /* จำนวนสมัครทุนในแต่ละปี */
     const [enrollByYear] = await connection.execute(`
     SELECT s.scho_year, COUNT(*) AS total
     FROM enroll e
@@ -87,14 +88,14 @@ export const getAdminDashboard = async (req, res) => {
     `);
 
     const [currentYearLevelStats] = await connection.execute(`
-    SELECT st.std_year, COUNT(*) AS total
-    FROM enroll e
-    JOIN student st ON e.std_id = st.std_id
-    JOIN scholarship_info s ON e.scho_id = s.scholarship_id
-    WHERE e.enroll_status = 1 AND s.scho_year = ?
-    GROUP BY st.std_year
-    ORDER BY st.std_year
-    `, [current_year])
+  SELECT st.std_year, COUNT(DISTINCT e.std_id) AS total
+  FROM enroll e
+  JOIN student st ON e.std_id = st.std_id
+  JOIN scholarship_info s ON e.scho_id = s.scholarship_id
+  WHERE e.enroll_status = 1 AND s.scho_year = ?
+  GROUP BY st.std_year
+  ORDER BY st.std_year
+`, [current_year]);
 
     return res.json({
       total_scholarship,

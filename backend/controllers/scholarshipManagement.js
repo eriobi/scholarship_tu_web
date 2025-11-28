@@ -63,8 +63,8 @@ export const createScholarship = async (req, res) => {
     const sqlAdd = `INSERT INTO scholarship_info (scho_name,scho_year,qualification,scho_type,scho_source,start_date,end_date,scho_desp,scho_file,image_file,is_active) VALUES (?,?,?,?,?,?,?,?,?,?,?)`
     const quaAdd = `INSERT INTO qualification (std_year,std_gpa,std_income) VALUES (?,?,?)`
 
-    const pdf = req.files?.file ? req.files.file[0].filename : null;
-const image = req.files?.image ? req.files.image[0].filename : null;
+    let pdf = req.files?.file ? req.files.file[0].filename : null;
+    let image = req.files?.image ? req.files.image[0].filename : null;
 
     try {
         connection = await pool.getConnection();

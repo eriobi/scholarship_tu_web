@@ -55,12 +55,23 @@ function NewsForm({ onSubmit, onCancel, data = {} }) {
         onChange={handleChange}
       />
 
-      <div className="form-buttons">
-        <button type="submit">บันทึก</button>
-        <button type="button" onClick={onCancel}>
-          ยกเลิก
-        </button>
-      </div>
+      <div className="md:col-span-2 grid grid-cols-2 gap-2 mt-4">
+        
+          <button
+            type="submit"
+            className="bg-purple-800 hover:bg-purple-900 w-full text-white px-8 py-2 rounded-lg font-medium shadow"
+          >
+            บันทึกข้อมูล
+          </button>
+        
+          <button
+            type="button"
+            onClick={onCancel}
+            className="w-full bg-gray-200 hover:bg-gray-300 px-8 py-2 rounded-lg font-medium"
+          >
+            ยกเลิก
+          </button>
+        </div>
     </form>
   );
 }

@@ -40,7 +40,7 @@ function DateSelect({id,label,value,onChange}) {
             });
           onChange(thaiDate);//ไส่ไว้แก้บัค date ไม่เข้า db
         }}
-        minDate={new Date(2025, 1, 1)}
+        minDate={new Date(2024, 1, 1)}
         maxDate={new Date(2030, 1, 1)}
       ></Datepicker>
     </div>

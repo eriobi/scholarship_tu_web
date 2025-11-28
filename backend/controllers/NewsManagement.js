@@ -5,7 +5,7 @@ let connection;
 /* get news */
 export const getNews = async (req, res) => {
     try {
-        const [row] = await pool.execute('SELECT * FROM news')
+        const [row] = await pool.execute('SELECT * FROM news WHERE is_active = 1 ORDER BY created_at DESC')
         res.json(row)
 
     } catch (err) {

@@ -6,8 +6,12 @@ const login = async (req, res) => {
 
     const { email, password } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).json({ message: "data are required" });
+    if (!email) {
+        return res.status(400).json({ message: "กรุณากรอกอีเมล" });
+    }
+
+    if (!password) {
+        return res.status(400).json({ message: "กรุณากรอกรหัสผ่าน" });
     }
 
     const sql = `SELECT * FROM users WHERE email = ? AND is_active = 1`
@@ -18,7 +22,7 @@ const login = async (req, res) => {
         
         /* หา email */
         if (rows.length === 0) {
-            return res.status(401).json({ message: 'Email invalid' });
+            return res.status(401).json({ message: 'ไม่พบผู้ใช้' });
         }
 
         /* ข้อมูลแรกที่ได้จากการคืนค่าของ pool */
@@ -27,7 +31,7 @@ const login = async (req, res) => {
         /* เปรียบเทียบรหัสผ่าน */
         const isMatch = await bcrypt.compare(password, user.password)
         if (!isMatch) {
-            return res.status(401).json({ message: 'invalid credentials' })
+            return res.status(401).json({ message: 'รหัสผิด' })
         }
 
         /* เก็บ token */

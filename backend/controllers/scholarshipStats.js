@@ -10,16 +10,16 @@ export const getScholarshipStats = async (req, res) => {
         /* จำนวนที่ enroll */
         const [[{ total }]] = await connection.execute(
             `SELECT COUNT(*) AS total
-     FROM enroll
-     WHERE scho_id = ?`,
+            FROM enroll
+            WHERE scho_id = ?`,
             [schoId]
         );
 
         /* จำนวนที่ได้รับทุน */
         const [[{ approved }]] = await connection.execute(
             `SELECT COUNT(*) AS approved
-       FROM enroll
-       WHERE scho_id = ? AND enroll_status = 1`,
+            FROM enroll
+            WHERE scho_id = ? AND enroll_status = 1`,
             [schoId]
         );
 
@@ -32,18 +32,18 @@ export const getScholarshipStats = async (req, res) => {
         if (userId) {
             const [[student]] = await connection.execute(
                 `SELECT std_id, std_year, std_gpa, std_income
-         FROM student WHERE user_id = ?`,
+                 FROM student WHERE user_id = ?`,
                 [userId]
             );
 
             if (student) {
                 const [[req]] = await connection.execute(
-                    `SELECT q.std_year AS req_year,
+                `SELECT q.std_year AS req_year,
                   q.std_gpa AS req_gpa,
                   q.std_income AS req_income
-           FROM scholarship_info s
-           JOIN qualification q ON s.qualification = q.qua_id
-           WHERE s.scholarship_id = ?`,
+                FROM scholarship_info s
+                JOIN qualification q ON s.qualification = q.qua_id
+                WHERE s.scholarship_id = ?`,
                     [schoId]
                 );
 

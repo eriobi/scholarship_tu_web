@@ -19,7 +19,8 @@ export const getAllScholarship = async (req, res) => {
             FROM scholarship_info s
             JOIN qualification q 
             ON s.qualification = q.qua_id
-            ORDER BY s.created_at DESC`) //เรียงจากใหม่ไปเก่า LEFT เพื่อให้ทุนที่ไม่มีเงื่อนไขปรากฏขึ้น
+            WHERE s.is_active = 1 
+            ORDER BY s.start_date DESC`) //เรียงจากใหม่ไปเก่า โดยเช็คจากวันและต้อง active ด้วย
         res.json(rows)
     } catch (err) {
         return res.status(500).json({ message: 'Server error' })

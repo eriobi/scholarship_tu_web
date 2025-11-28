@@ -75,7 +75,7 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
     <form
       onSubmit={handleSubmit}
       encType="multipart/form-data"
-      className="grid grid-cols-1 md:grid-cols-2 gap-4 px-4 pb-4 w-full"
+      className="grid grid-cols-1 md:grid-cols-2 gap-4 px-4 pb-4 w-3xl"
     >
       <div className="md:col-span-2">
         <Input
@@ -168,6 +168,7 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
         onChange={handleChange}
         options={[
           { label: "ไม่มีขั้นต่ำ", value: "0" },
+          { label: "ไม่ได้ระบุชัดเจน", value: "ไม่ได้ระบุชัดเจน" },
           { label: "ต่ำกว่า 100,000 บาท", value: "0-100,000" },
           { label: "100,000 - 200,000 บาท", value: "100000-200,000" },
           { label: "200,000 ขึ้นไป", value: "300,000" },
@@ -205,7 +206,7 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
       </div>
 
       <span className="md:col-span-2">
-        <p>อัปโหลดภาพ</p>
+        <p className="pb-1 text-gray-800">อัปโหลดภาพ</p>
 
         {/* แสดงไฟล์เก่า */}
         {formData.image && typeof formData.image === "string" && (
@@ -230,7 +231,7 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
       </span>
 
       <span className="md:col-span-2">
-        <p>อัปโหลด PDF</p>
+        <p className="pb-1 text-gray-800">อัปโหลด PDF</p>
 
         {formData.file && typeof formData.file === "string" && (
           <div className="mb-2">
