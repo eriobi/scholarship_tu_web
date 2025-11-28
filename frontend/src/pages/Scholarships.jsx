@@ -80,14 +80,14 @@ const Scholarships = () => {
         className="w-full h-12 pl-6 pr-12 rounded-full shadow border border-gray-200
                focus:outline-none focus:ring-2 focus:ring-purple-700
                text-gray-700"
-      />
-      <button className="absolute right-6 top-6">
-        <IoIosSearch className="text-purple-700 h-5 w-5 absolute top-1/2 -translate-y-1/2 right-6 fill-current"/>
-      </button>
+        />
+        <button className="absolute right-6 top-6">
+          <IoIosSearch className="text-purple-700 h-5 w-5 absolute top-1/2 -translate-y-1/2 right-6 fill-current"/>
+        </button>
 
       </div>
 
-      <div className="w-full max-w-[75%] mx-auto flex gap-4 py-4 justify-end ">
+      <div className="w-full max-w-[80%] mx-auto flex gap-4 py-4 justify-end ">
         {/* ฟิลเตอร์ type */}
         <select
           value={filterType}
