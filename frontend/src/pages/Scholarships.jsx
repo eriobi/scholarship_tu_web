@@ -87,7 +87,7 @@ const Scholarships = () => {
 
       </div>
 
-      <div className="w-full max-w-[80%] mx-auto flex gap-4 py-4 justify-end ">
+      <div className="w-full max-w-[94%] mx-auto flex gap-4 py-4 justify-end ">
         {/* ฟิลเตอร์ type */}
         <select
           value={filterType}

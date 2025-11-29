@@ -18,43 +18,45 @@ function Home() {
   const [scholarships, setScholarships] = useState([]);
   const [bookmarks, setBookmarks] = useState([]);
   const { token } = useContext(UserContext);
+  const [card, setCards] = useState([]);
 
+  const API_URL = "/api/scholarships";
+
+  /* get ข้อมูลทุน */
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axiosInstance.get("/api/scholarships");
-        setScholarships(res.data);
+        const resCards = await axiosInstance.get(API_URL); //เก็บข้อมูลทุน
+        setCards(resCards.data);
 
-        if (token) {
-          const resBookmarks = await axiosInstance.get("/api/bookmarks");
-          setBookmarks(resBookmarks.data.map((b) => b.scho_id));
-        } else {
-          setBookmarks([]);
-        }
+        const resBookmarks = await axiosInstance.get("/api/bookmarks");
+        setBookmarks(resBookmarks.data.map((b) => b.scho_id)); //เก็บทุนที่มีการ bookmark ไว้ ลง setBookmarks
       } catch (err) {
         console.log(err);
       }
     };
     fetchData();
-  }, [token]);
+  }, []);
 
   /* กด bookmark */
   const handleBookmark = async (id) => {
-    if (!token) {
-      alert("กรุณาเข้าสู่ระบบก่อน");
-      return;
+    try {
+      if (!token) {
+        alert("กรุณาเข้าสู่ระบบก่อน");
+      }
+      /* update bookmark */
+      const res = await axiosInstance.get("/api/bookmarks");
+      setBookmarks(res.data.map((b) => b.scho_id));
+
+      const cardsRes = await axiosInstance.get(API_URL);
+      setCards(cardsRes.data);
+
+      console.log("bookmark sucecss", id);
+    } catch (err) {
+      console.log(err);
     }
-
-    await axiosInstance.post(`/api/scholarships/${id}/bookmark`);
-
-    const resBookmarks = await axiosInstance.get("/api/bookmarks");
-    setBookmarks(resBookmarks.data.map((b) => b.scho_id));
-
-    const resCards = await axiosInstance.get("/api/scholarships");
-    setScholarships(resCards.data);
   };
 
-  /* กด สมัครรับทุน */
   const handleEnroll = (id) => {
     console.log("Enroll success:", id);
   };
@@ -68,12 +70,11 @@ function Home() {
       />
       <div className="bg-gray-50 -mt-40 mx-25 ">
         <Swiper
+          key={bookmarks.length}
           slidesPerView={4}
           spaceBetween={100}
-          pagination={{
-            type: "progressbar",
-          }}
-          navigation={true}
+          pagination={false} //เส้นขอบบ่งบอกตำแหน่ง
+          navigation={true} //ลูกศร
           modules={[Pagination, Navigation]}
           breakpoints={{
             0: { slidesPerView: 1 }, // mobile
@@ -84,11 +85,12 @@ function Home() {
           }}
           className="mySwiper"
         >
-          {scholarships.map((s) => (
-            <SwiperSlide key={s.scholarship_id}>
+          {card.map((scholarship) => (
+            <SwiperSlide key={scholarship.scholarship_id}>
               <ScholarshipCard
-                scholarship={s}
-                bookmarked={bookmarks.includes(s.scholarship_id)}
+                key={scholarship.scholarship_id}
+                scholarship={scholarship}
+                bookmarked={bookmarks.includes(scholarship.scholarship_id)}
                 onBookmark={handleBookmark}
                 onEnroll={handleEnroll}
               />
@@ -103,7 +105,9 @@ function Home() {
         </div>
 
         <div className="basis-[65%]">
-          <h2 className="text-lg font-semibold  px-2 pt-6 text-gray-900">ข่าวประชาสัมพันธ์</h2>
+          <h2 className="text-lg font-semibold  px-2 pt-6 text-gray-900">
+            ข่าวประชาสัมพันธ์
+          </h2>
           <NewsCard />
         </div>
       </div>

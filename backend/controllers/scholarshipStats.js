@@ -24,9 +24,9 @@ export const getScholarshipStats = async (req, res) => {
         // สถิติโดยรวมของทุนนี้
         const [[stats]] = await connection.execute(
             `SELECT 
-          SUM(CASE WHEN enroll_status = 1 THEN 1 ELSE 0 END) AS approved,
-          SUM(CASE WHEN enroll_status = 0 THEN 1 ELSE 0 END) AS rejected,
-          COUNT(*) AS total
+            SUM(CASE WHEN enroll_status = 1 THEN 1 ELSE 0 END) AS approved,
+            SUM(CASE WHEN enroll_status = 0 THEN 1 ELSE 0 END) AS rejected,
+            COUNT(*) AS total
         FROM enroll
         WHERE scho_id = ?`,
             [id]
@@ -46,9 +46,9 @@ export const getScholarshipStats = async (req, res) => {
 
             const [[req]] = await connection.execute(
                 `SELECT q.std_year, q.std_gpa, q.std_income 
-            FROM qualification q
-            JOIN scholarship_info s ON s.qualification = q.qua_id
-            WHERE s.scholarship_id = ?`,
+     FROM scholarship_info s
+     JOIN qualification q ON s.qualification = q.qua_id
+     WHERE s.scholarship_id = ?`,
                 [id]
             );
 
@@ -57,9 +57,12 @@ export const getScholarshipStats = async (req, res) => {
                     year_ok: student.std_year >= req.std_year,
                     gpa_ok: student.std_gpa >= req.std_gpa,
                     income_ok:
-                        student.std_income <= parseInt(req.std_income.replace(/\D/g, ""), 10),
+                        req.std_income === "ไม่ได้ระบุชัดเจน"
+                            ? true
+                            : student.std_income <= parseInt(req.std_income.replace(/\D/g, ""), 10),
                 };
             }
+
         }
 
         return res.json({

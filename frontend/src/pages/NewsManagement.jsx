@@ -164,7 +164,7 @@ const NewsManagement = () => {
           ยืนยันการลบข้อมูล
         </h3>
         <p className="text-gray-600 mb-6">
-          คุณต้องการลบ {selectedId.length} นี้หรือไม่?
+          คุณต้องการลบ {selectedId.length} ทุนหรือไม่?
         </p>
         <div className="flex justify-end gap-3">
           <button

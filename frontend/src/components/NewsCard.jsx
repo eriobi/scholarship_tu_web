@@ -60,13 +60,14 @@ function NewsCard() {
 
             {/* ปุ่มโหลด PDF */}
             {selectedNews.news_file && (
+              
               <a
-                href={`http://localhost:5000/uploads/news/${selectedNews.news_file}`}
+                href={`http://localhost:5000/uploads/${selectedNews.news_file}`}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-block mt-4 px-4 py-2 rounded-lg bg-purple-700 text-white hover:bg-purple-900"
+                className="inline-block mt-4 px-4 py-2 rounded-lg bg-purple-700 text-white text-center hover:bg-purple-900 w-full"
               >
-                ดาวน์โหลดไฟล์ PDF
+                ดาวน์โหลดเอกสาร
               </a>
             )}
 

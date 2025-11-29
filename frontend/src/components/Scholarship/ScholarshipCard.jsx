@@ -6,6 +6,7 @@ import imageTU from "../../assets/Emblem_of_Thammasat_University.svg.webp";
 import axiosInstance from "../../axiosInstance";
 import { UserContext } from "../../UserContext";
 import Modal from "../Modal";
+import { PiEmpty } from "react-icons/pi";
 
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -30,6 +31,7 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
     std_income,
     start_date,
     end_date,
+    scho_file,
   } = scholarship;
 
   /* รูปแบบเวลา */
@@ -78,6 +80,8 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
   const imageStyles = image[scho_source] || image.default;
 
   /* bookmark */
+  const [bookmarkError, setBookmarkError] = useState("");
+
   const handleBookmark = async (id) => {
     /*  เช็คว่า log in หรือยัง */
     if (!token) {
@@ -87,11 +91,12 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
 
     try {
       const res = await axiosInstance.post(`/api/scholarships/${id}/bookmark`);
-
       console.log("Bookmark success", res.data);
       onBookmark?.(id); //? ถ้า onBookmark เป็น null จะไม่ทำงาน ,reload bookmark ใหม่
     } catch (err) {
       console.log(err);
+      const msg = err.response?.data?.message;
+      setBookmarkError(msg);
     }
   };
 
@@ -122,14 +127,20 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
 
   /* แสดงสถิติ */
   const showStats = async (id) => {
-    try {
-      const res = await axiosInstance.get(`/api/scholarships/${id}/stats`);
-      setStats(res.data);
-      setOpenModal(true);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  try {
+    const res = await axiosInstance.get(`/api/scholarships/${id}/stats`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    setStats(res.data);
+    setOpenModal(true);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 
   /* กราฟวงกลม */
   const pieStats = stats
@@ -137,7 +148,10 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
         labels: ["ได้รับทุน", "ไม่ได้รับทุน"],
         datasets: [
           {
-            data: [stats.approved, stats.rejected],
+            data: [
+              Number(stats.approved) /* แปลงเป็น int กันพลาด */,
+              Number(stats.rejected),
+            ],
             backgroundColor: ["#4CAF50", "#F44336"],
             hoverBackgroundColor: ["#66BB6A", "#EF5350"],
           },
@@ -245,26 +259,53 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
 
               {stats && (
                 <div className="space-y-2">
-                  {pieStats && (
-                    <div className="w-[200px] mx-auto">
-                      <Pie data={pieStats} options={options} />
+                  {/* ถ้ายังไม่มีคนสมัคร */}
+                  {stats.total === 0 ? (
+                    <div className="flex flex-col items-center justify-center mt-4">
+                      <PiEmpty size={120} className="text-gray-300 p-1" />
+                      <p className="text-gray-500 font-semibold">
+                        ยังไม่มีคนสมัคร
+                      </p>
                     </div>
+                  ) : (
+                    /* แสดงกราฟ */
+                    pieStats && (
+                      <div className="w-[200px] mx-auto">
+                        <Pie data={pieStats} options={options} />
+                      </div>
+                    )
                   )}
+
+                  {/* จำนวนคนสมัคร */}
                   <div className="flex justify-center gap-2 mt-3 text-gray-400">
                     <p>จำนวนคนสมัครทั้งหมด:</p>
                     <p className="text-black">{stats.total} คน</p>
                   </div>
 
+                  {/* อัตราการได้รับทุน */}
                   <div className="flex justify-center gap-2 text-gray-400">
                     <p>อัตราคนที่ได้รับทุน :</p>
                     <p className="text-black">{stats.percent}%</p>
                   </div>
-                  {/* เงื่อนไขสมัครทุนครบไหม */}
+
+                  {/* ดาวน์โหลดไฟล์ */}
+                  {scho_file && (
+                    <a
+                      href={`http://localhost:5000/uploads/${scho_file}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-3 inline-block text-sm text-blue-600 underline text-center"
+                    >
+                      ดาวน์โหลดเอกสาร
+                    </a>
+                  )}
+                  {/* ตรวจสอบคุณสมบัติ */}
                   {stats.qualify && (
-                    <div className="mt-4 ">
+                    <div className="mt-4">
                       <h3 className="justify-center mx-1">
                         ผลการตรวจสอบคุณสมบัติของเบื้องต้น:
                       </h3>
+
                       {/* ปี */}
                       <p className="text-gray-400 mx-1">
                         ชั้นปี:{" "}
@@ -280,7 +321,8 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
                             : "ไม่ตรงเงื่อนไข"}
                         </span>
                       </p>
-                      {/* gpa */}
+
+                      {/* GPA */}
                       <p className="text-gray-400 mx-1">
                         GPA:{" "}
                         <span
@@ -291,21 +333,6 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
                           }
                         >
                           {stats.qualify.gpa_ok
-                            ? "ตรงเงื่อนไข"
-                            : "ไม่ตรงเงื่อนไข"}
-                        </span>
-                      </p>
-                      {/* income */}
-                      <p className="text-gray-400 mx-1">
-                        รายได้:{" "}
-                        <span
-                          className={
-                            stats.qualify.income_ok
-                              ? "text-green-600"
-                              : "text-red-600"
-                          }
-                        >
-                          {stats.qualify.income_ok
                             ? "ตรงเงื่อนไข"
                             : "ไม่ตรงเงื่อนไข"}
                         </span>
@@ -338,6 +365,9 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
             {/* ข้อความ message */}
             {errMessage && (
               <p className="text-red-600 text-sm mt-2">{errMessage}</p>
+            )}
+            {bookmarkError && (
+              <p className="text-red-600 text-sm mt-2">{bookmarkError}</p>
             )}
           </div>
         </div>

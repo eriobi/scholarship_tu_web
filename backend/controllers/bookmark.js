@@ -65,12 +65,13 @@ export const toggleBookmarks = async (req, res) => {
       //มีอยู่แล้วให้ลบ
       await connection.execute('DELETE FROM bookmark WHERE student_id = ? AND scho_id = ?', [/* newStatus, */ student_id, scho_id])
       /*             res.status(201).json({ message: 'bookmark status updated', is_active: newStatus }) */
-      return res.status(201).json({ message: 'Bookmark removed' })
+      return res.status(201).json({ message: 'Bookmark removed', active: false })
     } else {
       //ไม่มีให้เพิ่ม ใส่ return เพราะเมื่อส่ง res จะหยุด execution (ส่ง res เยอะเลยต้อง return)
-      return await connection.execute('INSERT INTO bookmark (student_id, scho_id, is_active) VALUE(?,?,?)', ([student_id, scho_id, true]))
+      await connection.execute('INSERT INTO bookmark (student_id, scho_id, is_active) VALUE(?,?,?)', ([student_id, scho_id, true]))
+      return res.status(201).json({ message: 'Bookmark added', active: true });
     }
-    return res.status(200).json({ message: 'Bookmark added', is_active: 1 });
+    
   } catch (err) {
     console.log('add bk err ', err)
     return res.status(500).json({ message: 'Server error' });
