@@ -294,7 +294,6 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
                       <p>{stats.desp}</p>
                     </div>
                   )}
-
                   {/* ดาวน์โหลดไฟล์ */}
                   {scho_file && (
                     <a

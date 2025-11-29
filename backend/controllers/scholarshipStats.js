@@ -47,9 +47,9 @@ export const getScholarshipStats = async (req, res) => {
 
             const [[req]] = await connection.execute(
                 `SELECT q.std_year, q.std_gpa, q.std_income, s.scho_desp
-            FROM scholarship_info s
-            JOIN qualification q ON s.qualification = q.qua_id
-            WHERE s.scholarship_id = ?`,
+                FROM scholarship_info s
+                JOIN qualification q ON s.qualification = q.qua_id
+                WHERE s.scholarship_id = ?`,
                 [id]
             );
 
@@ -67,13 +67,19 @@ export const getScholarshipStats = async (req, res) => {
 
         }
 
+        /* คำอธิบาย */
+        const [[despRow]] = await connection.execute(
+            "SELECT scho_desp FROM scholarship_info WHERE scholarship_id = ?",
+            [id]
+        );
+
         return res.json({
             approved: stats.approved || 0,
             rejected: stats.rejected || 0,
             total: stats.total || 0,
             percent,
             qualify, // ถ้าไม่ล็อกอิน เป็น null
-            desp: req?.scho_desp || ""
+            desp: despRow?.scho_desp || ""
         });
     } catch (err) {
         console.log(err);
