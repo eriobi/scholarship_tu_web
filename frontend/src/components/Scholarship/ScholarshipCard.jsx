@@ -127,20 +127,19 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
 
   /* แสดงสถิติ */
   const showStats = async (id) => {
-  try {
-    const res = await axiosInstance.get(`/api/scholarships/${id}/stats`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+      const res = await axiosInstance.get(`/api/scholarships/${id}/stats`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    setStats(res.data);
-    setOpenModal(true);
-  } catch (err) {
-    console.log(err);
-  }
-};
-
+      setStats(res.data);
+      setOpenModal(true);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   /* กราฟวงกลม */
   const pieStats = stats
@@ -288,24 +287,31 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
                     <p className="text-black">{stats.percent}%</p>
                   </div>
 
+                  {/* คำอธิบายทุน */}
+                  {stats.desp && (
+                    <div className="mt-4 px-2 text-gray-700">
+                      <h3 className="font-semibold mb-1">คำอธิบายทุน:</h3>
+                      <p>{stats.desp}</p>
+                    </div>
+                  )}
+
                   {/* ดาวน์โหลดไฟล์ */}
                   {scho_file && (
                     <a
                       href={`http://localhost:5000/uploads/${scho_file}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="mt-3 inline-block text-sm text-blue-600 underline text-center"
+                      className="inline-block mt-4 px-4 py-2 rounded-lg bg-[#219B9D] text-white text-center hover:bg-purple-900 w-full"
                     >
                       ดาวน์โหลดเอกสาร
                     </a>
                   )}
                   {/* ตรวจสอบคุณสมบัติ */}
                   {stats.qualify && (
-                    <div className="mt-4">
+                    <div className="mt-4 ">
                       <h3 className="justify-center mx-1">
                         ผลการตรวจสอบคุณสมบัติของเบื้องต้น:
                       </h3>
-
                       {/* ปี */}
                       <p className="text-gray-400 mx-1">
                         ชั้นปี:{" "}
@@ -321,8 +327,7 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
                             : "ไม่ตรงเงื่อนไข"}
                         </span>
                       </p>
-
-                      {/* GPA */}
+                      {/* gpa */}
                       <p className="text-gray-400 mx-1">
                         GPA:{" "}
                         <span
@@ -336,6 +341,25 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
                             ? "ตรงเงื่อนไข"
                             : "ไม่ตรงเงื่อนไข"}
                         </span>
+                      </p>
+                      {/* รายได้ */}
+                      <p className="text-gray-400 mx-1">
+                        รายได้:{" "}
+                        {std_income === "ไม่ได้ระบุชัดเจน" ? (
+                          <span className="text-gray-600">ไม่ได้ระบุ</span>
+                        ) : (
+                          <span
+                            className={
+                              stats.qualify.income_ok
+                                ? "text-green-600"
+                                : "text-red-600"
+                            }
+                          >
+                            {stats.qualify.income_ok
+                              ? "ตรงเงื่อนไข"
+                              : "ไม่ตรงเงื่อนไข"}
+                          </span>
+                        )}
                       </p>
                     </div>
                   )}

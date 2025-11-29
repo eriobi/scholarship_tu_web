@@ -2,39 +2,6 @@ import pool from "../pool.js";
 
 let connection = await pool.getConnection();
 
-/* ฟังก์ชันแปลงเงื่อนไขรายได้ */
-function parseIntCondition(str) {
-  if (!str) return null;
-
-  str = str.trim();  //ลบช่องว่างของ str
-
- /*  ช่วงตัวเลข เช่น 100000-200000 */
-  if (str.includes("-")) {
-    const [min, max] = str.split("-").map(v => parseInt(v.trim(), 10)); // แปลงเป็น int ฐาน10 แล้วให้ลบช่องว่าง
-    return { type: "range", min, max };
-  }
-
-  /* ไม่เกิน X */
-  if (str.includes("ไม่เกิน")) {
-    const max = parseInt(str.replace("ไม่เกิน", "").trim(), 10);
-    return { type: "max", max };
-  }
-
-  /*  ต่ำกว่า X */
-  if (str.includes("ต่ำกว่า")) {
-    const max = parseInt(str.replace("ต่ำกว่า", "").trim(), 10);
-    return { type: "less", value: max };
-  }
-
-  /* ตัวเลขล้วน เช่น 0 */
-  if (/^\d+$/.test(str)) {
-    return { type: "max", max: parseInt(str, 10) };
-  }
-
-  /*  ให้ null เพื่อให้ main logic ตรวจต่อ */
-  return null;
-}
-
 const enroll = async (req, res) => {
   const userId = req.user.user_id;
   const scholarshipId = req.params.id;
@@ -80,45 +47,37 @@ const enroll = async (req, res) => {
       return res.status(400).json({ message: "GPA ไม่ถึงเกณฑ์" });
     }
 
-    /* รายได้ */
-    const reqIncome = qualify.req_income;
+    /* รายได้ (เวอร์ชันใหม่: รองรับเฉพาะ "ไม่เกิน X") */
+    let reqIncome = qualify.req_income?.trim();
     const income = student.std_income;
 
-    /* รายได้ไม่ชัดเจนให้ข้าม */
-    if ( reqIncome === "ไม่ได้ระบุชัดเจน" || reqIncome === null || reqIncome.trim() === "" || //.trip ลบช่องว่าง
-        reqIncome === "ไม่มีขั้นต่ำ" || reqIncome === "0"
+    // กรณีที่ข้ามการตรวจรายได้
+    if (
+      !reqIncome || 
+      reqIncome === "0" ||
+      reqIncome === "ไม่มีขั้นต่ำ" ||
+      reqIncome === "ไม่ได้ระบุชัดเจน"
     ) {
-      // ให้ข้ามการตรวจรายได้
+      // ไม่ตรวจรายได้
     } else {
-      /* parseIntCondition ตรวจ */
-      const cond = parseIntCondition(reqIncome);
+      // แปลงค่าเป็นตัวเลขล้วน เช่น "200000"
+      const maxIncome = parseInt(reqIncome.replace(/\D/g, ""), 10);
 
-      if (!cond) {
-        return res.status(400).json({ message: "เงื่อนไขรายได้ของทุนไม่ถูกต้อง" });
+      if (isNaN(maxIncome)) {
+        return res
+          .status(400)
+          .json({ message: "เงื่อนไขรายได้ของทุนไม่ถูกต้อง" });
       }
 
-      switch (cond.type) {
-        case "range":
-          if (income < cond.min || income > cond.max) {
-            return res.status(400).json({ message: "รายได้ไม่อยู่ในช่วงที่กำหนด" });
-          }
-          break;
-
-        case "max":
-          if (income > cond.max) {
-            return res.status(400).json({ message: "รายได้มากกว่าเกณฑ์ที่กำหนด" });
-          }
-          break;
-
-        case "less":
-          if (income >= cond.value) {
-            return res.status(400).json({ message: "รายได้ต้องน้อยกว่าเกณฑ์ที่กำหนด" });
-          }
-          break;
+      // ตรวจ: รายได้ต้อง <= req_income
+      if (income > maxIncome) {
+        return res
+          .status(400)
+          .json({ message: "รายได้มากกว่าเกณฑ์ที่กำหนด" });
       }
     }
 
-    /* สมคัรยัง */
+    /* เช็คว่าสมัครไปแล้วหรือยัง */
     const [exists] = await connection.execute(
       "SELECT * FROM enroll WHERE std_id = ? AND scho_id = ?",
       [studentId, scholarshipId]

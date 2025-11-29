@@ -65,7 +65,7 @@ function NewsCard() {
                 href={`http://localhost:5000/uploads/${selectedNews.news_file}`}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-block mt-4 px-4 py-2 rounded-lg bg-purple-700 text-white text-center hover:bg-purple-900 w-full"
+                className="inline-block mt-4 px-4 py-2 rounded-lg bg-[#219B9D] text-white text-center hover:bg-purple-900 w-full"
               >
                 ดาวน์โหลดเอกสาร
               </a>

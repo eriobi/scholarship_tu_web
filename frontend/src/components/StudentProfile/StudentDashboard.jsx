@@ -23,7 +23,16 @@ function StudentDashboard({ reload }) {
   useEffect(() => {
     load();
   }, [reload]);
+  
   if (!data) return <p>Loading...</p>;
+  if (data.total === 0) {
+    return (
+      <div className="p-6 text-center text-gray-500">
+        <h1 className="text-xl font-bold mb-4">Dashboard นักศึกษา</h1>
+        <p className="text-gray-500 py-10">ยังไม่มีข้อมูล</p>
+      </div>
+    );
+  }
 
   /* กราฟวงกลม */
   const pieData = {
