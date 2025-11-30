@@ -199,7 +199,7 @@ INSERT INTO `scholarship_info` (`scholarship_id`, `scho_name`, `scho_year`, `qua
 (9, 'ทุนโครงการคาเอเดะ', 2568, 6, 'ทุนเหมาจ่าย', 'ทุนภายนอก', '2025-10-15', '2025-10-30', 'มีจิตอาสา', NULL, NULL, 1, '2025-11-12 10:23:00', '2025-11-28 08:11:22'),
 (10, 'ทุนมูลนิธิอิออนประเทศไทย', 2568, 7, 'ทุนระยะยาว', 'ทุนภายนอก', '2025-01-14', '2025-02-07', 'นักศึกษาปีที่ 1 ให้เกรดเฉลี่ยของมัธยมปลายแทน', NULL, '1764291234595-scholarshipOfAeon-2568.pdf', 1, '2025-11-28 07:45:56', '2025-11-28 08:10:17'),
 (11, 'รับสมัครทุน บริษัท ซีคอน จำกัด ', 2568, 8, 'ทุนระยะยาว', 'ทุนภายนอก', '2025-01-14', '2025-02-07', '-ไม่เป็นนักศึกษาที่ได้รับทุนการศึกษาอื่นใด หรือกำลังอยู่ระหว่างรอรับทุน\r\n-เป็นนักศึกษาที่มีจิตอาสา มีคุณธรรม แต่ขาดแคลนทุนทรัพย์ในการศึกษา มีความประพฤติเรียบร้อย และไม่เคย\r\nถูกลงโทษทางวินัยเป็นนักศึกษาที่มีจิตอาสา มีคุณธรรม แต่ขาดแคลนทุนทรัพย์ในการศึกษา ม', NULL, '1764292185687-scholarshipOfSeacon-2025.pdf', 1, '2025-11-28 08:09:45', '2025-11-28 08:09:45'),
-(12, 'สมัครขอรับทุนภัยพิบัติ ปีการศึกษา 2568', 2568, 9, 'ทุนเหมาจ่าย', 'ทุนภายใน', '2025-01-01', '2025-12-31', '1. เป็นนักศึกษา มธ. ระดับปริญญาตรี\r\n2. นักศึกษา/ผู้ปกครองมีภูมิลำเนาในพื้นที่ประสบภัยพิบัติ\r\n3. มีความประพฤติดี\r\n4. ได้รับการรับรองจากหน่วยงานราชการ ว่าพื้นที่ที่อยู่อาศัยดังกล่าวอยู่ในเขตภัยพิบัติ', NULL, '1764292471311-20250218 à¹à¸à¸à¸à¸­à¸£à¹à¸¡à¸à¸­à¸à¸¸à¸à¸ à¸±à¸¢à¸à¸´à¸à¸±à¸à¸´.pdf', 1, '2025-11-28 08:14:31', '2025-11-28 08:14:31');
+(12, 'สมัครขอรับทุนภัยพิบัติ ปีการศึกษา 2568', 2568, 9, 'ทุนเหมาจ่าย', 'ทุนภายใน', '2025-01-01', '2025-12-31', '1. เป็นนักศึกษา มธ. ระดับปริญญาตรี\r\n2. นักศึกษา/ผู้ปกครองมีภูมิลำเนาในพื้นที่ประสบภัยพิบัติ\r\n3. มีความประพฤติดี\r\n4. ได้รับการรับรองจากหน่วยงานราชการ ว่าพื้นที่ที่อยู่อาศัยดังกล่าวอยู่ในเขตภัยพิบัติ', NULL, '1764292471311-20250218 à¹à¸à¸à¸à¸­à¸£à¹à¸¡à¸à¸­à¸à¸¸à¸à¸ à¸±à¸¢à¸à¸´à¸à¸±à¸à¸´.pdf', 1, '2025-11-28 08:14:31', '2025-11-28 08:14:31');
 
 -- --------------------------------------------------------
 
@@ -211,6 +211,7 @@ CREATE TABLE `std_notification` (
   `std_noti_id` int(11) NOT NULL,
   `student_id` int(11) NOT NULL,
   `std_noti_type` varchar(30) NOT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -289,7 +290,7 @@ INSERT INTO `users_session` (`session_id`, `user_id`, `token`, `is_active`, `cre
 (56, 1, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6InNpcmltYS5rYXZAZ21haWwuY29tIiwiaWF0IjoxNzY0MjYwMjEwLCJleHAiOjE3NjQ4NjUwMTB9.spti8J07X8xvkwnUMgY0b9wAQepN_hCn1N4lDLwJJLU', 1, '2025-11-27 23:16:50', '2025-11-27 16:16:50'),
 (59, 1, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6InNpcmltYS5rYXZAZ21haWwuY29tIiwiaWF0IjoxNzY0Mjk0OTE3LCJleHAiOjE3NjQ4OTk3MTd9.9qt2z4w92esEnbxnqtc5_Tsc4qcp3CkGbosjPMOROIc', 1, '2025-11-28 08:55:17', '2025-11-28 01:55:17');
 
---
+-- --------------------------------------------------------
 -- Indexes for dumped tables
 --
 
@@ -516,5 +517,5 @@ ALTER TABLE `users_session`
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+ /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+ /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

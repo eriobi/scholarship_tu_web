@@ -13,12 +13,15 @@ import ScholarshipCard from "../components/Scholarship/ScholarshipCard";
 import NewsCard from "../components/NewsCard";
 import Calendar from "../components/Calendar";
 import { UserContext } from "../UserContext";
+import LineConnectBox from "../components/LineConnectBox";
 
 function Home() {
   const [scholarships, setScholarships] = useState([]);
   const [bookmarks, setBookmarks] = useState([]);
-  const { token } = useContext(UserContext);
   const [card, setCards] = useState([]);
+
+  // ดึงทั้ง token + user ออกมาใช้
+  const { token, user } = useContext(UserContext);
 
   const API_URL = "/api/scholarships";
 
@@ -43,7 +46,9 @@ function Home() {
     try {
       if (!token) {
         alert("กรุณาเข้าสู่ระบบก่อน");
+        return;
       }
+
       /* update bookmark */
       const res = await axiosInstance.get("/api/bookmarks");
       setBookmarks(res.data.map((b) => b.scho_id));
@@ -51,7 +56,7 @@ function Home() {
       const cardsRes = await axiosInstance.get(API_URL);
       setCards(cardsRes.data);
 
-      console.log("bookmark sucecss", id);
+      console.log("bookmark success", id);
     } catch (err) {
       console.log(err);
     }
@@ -62,57 +67,77 @@ function Home() {
   };
 
   return (
-    <div className="bg-gray-50">
+  <div className="bg-gray-50">
+    {/*  LINE BOX */}
+    <div className="relative w-full">
       <img
         src={CSTU}
-        className="relative w-full min-w-[1100px] bg-center  bg-cover "
+        className="w-full min-w-[1100px] bg-center bg-cover"
         alt=""
       />
-      <div className="bg-gray-50 -mt-40 mx-25 ">
-        <Swiper
-          key={bookmarks.length}
-          slidesPerView={4}
-          spaceBetween={100}
-          pagination={false} //เส้นขอบบ่งบอกตำแหน่ง
-          navigation={true} //ลูกศร
-          modules={[Pagination, Navigation]}
-          breakpoints={{
-            0: { slidesPerView: 1 }, // mobile
-            640: { slidesPerView: 1.5 }, // small tablet
-            768: { slidesPerView: 2 }, // tablet
-            1024: { slidesPerView: 3 }, // laptop
-            1280: { slidesPerView: 4 }, // desktop
-          }}
-          className="mySwiper"
+
+      {/* กล่องเชื่อมต่อ LINE แสดงเฉพาะ "นักศึกษา" เท่านั้น  */}
+      {user?.role === "student" && (
+        <div
+          className="
+            absolute 
+            left-1/2 top-8 
+            -translate-x-1/2
+            w-[90%] max-w-3xl
+          "
         >
-          {card.map((scholarship) => (
-            <SwiperSlide key={scholarship.scholarship_id}>
-              <ScholarshipCard
-                key={scholarship.scholarship_id}
-                scholarship={scholarship}
-                bookmarked={bookmarks.includes(scholarship.scholarship_id)}
-                onBookmark={handleBookmark}
-                onEnroll={handleEnroll}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+          <LineConnectBox />
+        </div>
+      )}
+    </div>
+    
+
+    <div className="bg-gray-50 -mt-40 mx-25">
+      <Swiper
+        key={bookmarks.length}
+        slidesPerView={4}
+        spaceBetween={100}
+        pagination={false}
+        navigation={true}
+        modules={[Pagination, Navigation]}
+        breakpoints={{
+          0: { slidesPerView: 1 },
+          640: { slidesPerView: 1.5 },
+          768: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 },
+          1280: { slidesPerView: 4 },
+        }}
+        className="mySwiper"
+      >
+        {card.map((scholarship) => (
+          <SwiperSlide key={scholarship.scholarship_id}>
+            <ScholarshipCard
+              key={scholarship.scholarship_id}
+              scholarship={scholarship}
+              bookmarked={bookmarks.includes(scholarship.scholarship_id)}
+              onBookmark={handleBookmark}
+              onEnroll={handleEnroll}
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+
+    <div className="flex flex-col lg:flex-row gap-6 mt-8 px-8 pb-6">
+      <div className="basis-[35%]">
+        <Calendar />
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6 mt-8 px-8 pb-6">
-        <div className="basis-[35%] ">
-          <Calendar />
-        </div>
-
-        <div className="basis-[65%]">
-          <h2 className="text-lg font-semibold  px-2 pt-6 text-gray-900">
-            ข่าวประชาสัมพันธ์
-          </h2>
-          <NewsCard />
-        </div>
+      <div className="basis-[65%]">
+        <h2 className="text-lg font-semibold px-2 pt-6 text-gray-900">
+          ข่าวประชาสัมพันธ์
+        </h2>
+        <NewsCard />
       </div>
     </div>
-  );
+  </div>
+);
+
 }
 
 export default Home;

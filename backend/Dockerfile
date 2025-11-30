@@ -1,13 +1,18 @@
+# backend/Dockerfile
+
 FROM node:22
+
 WORKDIR /app
+
+# ติดตั้ง dependency
 COPY package*.json ./
 RUN npm install
-#เพิ่ม nodemon
-RUN npm install -g nodemon 
+RUN npm install -g nodemon
+
+# ก็อปโค้ดทั้งหมดเข้า container
 COPY . .
-#COPY  .env ./
-# .sh executable ภายใน container
-RUN sed -i 's/\r$//' wait-for-it.sh && chmod +x wait-for-it.sh
+
 EXPOSE 5000
-# ใช้ wait-for-it.sh รอ MySQL พร้อมก่อน start backend
-CMD ["./wait-for-it.sh", "db:3306", "--timeout=30", "--strict", "--", "npm", "run", "dev"]
+
+# ไม่ใช้ wait-for-it.sh แล้ว รัน backend ตรง ๆ เลย
+CMD ["npm", "run", "dev"]
