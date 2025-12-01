@@ -310,7 +310,7 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
                       href={`http://localhost:5000/uploads/${scho_file}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-block mt-4 px-4 py-2 rounded-lg bg-[#219B9D] text-white text-center hover:bg-purple-900 w-full"
+                      className="inline-block mt-4 px-4 py-2 rounded-lg bg-[#219B9D] text-white text-center hover:bg-[#08595b]"
                     >
                       ดาวน์โหลดเอกสาร
                     </a>
