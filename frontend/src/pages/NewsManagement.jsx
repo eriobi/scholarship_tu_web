@@ -130,7 +130,6 @@ const NewsManagement = () => {
         <div className="w-[80%] mx-auto">
           {/* ปุ่ม */}
           <div className="justify-end flex gap-2 mb-1 items-center">
-            <SocialButton action="line">ส่งข้อความผ่าน </SocialButton>
             <ActionButton
               action="delete"
               onClick={() => {

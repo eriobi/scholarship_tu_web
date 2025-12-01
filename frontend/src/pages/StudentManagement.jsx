@@ -36,9 +36,7 @@ const StudentManagement = () => {
 
       <div className="flex justify-center w-full max-w-full h-auto">
         <div className="w-[80%] mx-auto">
-          <div className="justify-end flex gap-2 mb-1 items-center">
-            <SocialButton action="line">ส่งข้อความผ่าน </SocialButton>
-          </div>
+          
           <StudentTable
           studentData={student}
         />
