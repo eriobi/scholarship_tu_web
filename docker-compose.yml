@@ -16,10 +16,11 @@ services:
       LINE_CHANNEL_ACCESS_TOKEN: ToC+ViAeTnmcLO3BfoK1q+C3rykhimm+6QuBNE8ef8x7Oa/qaucUg3POXdzA/FHLLHUV93X5VllRuwU1ohsp35aE5cVy+v6YM4P0xs7Je3ntP01U75uv3cWmymmYr0f5GjvjQ08aHeOm/NlPs8cucAdB04t89/1O/w1cDnyilFU=
 
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - mynetwork
-    command: ["./wait-for-it.sh", "db:3306", "--", "npm", "run", "dev"]
+   
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -43,7 +44,8 @@ services:
       - ./frontend:/app
       - /app/node_modules
     depends_on:
-      - backend
+      db:
+        condition: service_healthy
     networks:
       - mynetwork
 
@@ -60,6 +62,11 @@ services:
       - ./project_db.sql:/docker-entrypoint-initdb.d/project_db.sql
     networks:
       - mynetwork
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
 
   line-bot:
     build: ./line-bot

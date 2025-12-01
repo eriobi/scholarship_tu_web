@@ -16,9 +16,4 @@ COPY . .
 # กำหนดพอร์ตที่ container จะเปิด
 EXPOSE 3000
 
-# ✅ เพิ่มสิทธิ์รัน wait-for-it.sh
-RUN chmod +x wait-for-it.sh
-
-# ✅ ให้รอนานขึ้น 60 วิ ก่อนเริ่มรัน node
-CMD ["./wait-for-it.sh", "db:3306", "--timeout=60", "--", "npm", "start"]
-
+CMD ["npm", "start"]
