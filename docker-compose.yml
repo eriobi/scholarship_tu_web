@@ -61,6 +61,19 @@ services:
     networks:
       - mynetwork
 
+  line-bot:
+    build: ./line-bot
+    container_name: line-bot
+    ports:
+      - "3100:3100"
+    env_file:
+      - ./line-bot/.env      # เปลี่ยนจาก .env.docker เป็น .env
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+
+
 networks:
   mynetwork:
 
