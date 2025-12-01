@@ -11,6 +11,8 @@ import Register from "./pages/Register";
 import News from "./pages/News";
 import Scholarships from "./pages/Scholarships";
 
+import NotFound from "./pages/notFound";
+
 import Profile from "./pages/Profile";
 import Bookmarks from "./pages/Bookmarks";
 import NotiStudent from "./pages/NotiStudent";
@@ -70,6 +72,8 @@ function App() {
               <Route path="/admin/student" element={<StudentManagement />} />
               <Route path="/admin/dashboard" element={<DashboardAdmin />} />
             </Route>
+
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
       </div>

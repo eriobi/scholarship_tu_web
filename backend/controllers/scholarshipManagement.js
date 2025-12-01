@@ -40,6 +40,15 @@ cron.schedule("0 0 * * *", async () => {
   }
 });
 
+function normalizeDate(date) {
+  if (!date) return null;
+  try {
+    return new Date(date).toISOString().split("T")[0];
+  } catch (e) {
+    return null;
+  }
+}
+
 /* ------------------------------------------------------------------
  * 2) get ข้อมูลทุนทั้งหมด
  * -----------------------------------------------------------------*/
@@ -89,6 +98,9 @@ export const createScholarship = async (req, res) => {
     is_active,
   } = req.body;
 
+  const start_date = normalizeDate(startDate);
+  const end_date = normalizeDate(endDate);
+  
   const sqlAdd = `INSERT INTO scholarship_info 
     (scho_name, scho_year, qualification, scho_type, scho_source, start_date, end_date, scho_desp, scho_file, image_file, is_active) 
     VALUES (?,?,?,?,?,?,?,?,?,?,?)`;
@@ -124,8 +136,8 @@ export const createScholarship = async (req, res) => {
       quaId,
       type,
       source,
-      startDate,
-      endDate,
+      start_date,
+      end_date,
       desp,
       pdf,
       image,
@@ -188,8 +200,8 @@ export const updateScholarship = async (req, res) => {
       scho_type: updateData.type,
       scho_source: updateData.source,
       scho_desp: updateData.desp,
-      start_date: updateData.startDate,
-      end_date: updateData.endDate,
+      start_date: normalizeDate(updateData.startDate) || null,
+      end_date: normalizeDate(updateData.endDate) || null,
       is_active: updateData.is_active,
       scho_file: pdf,
       image_file: image,

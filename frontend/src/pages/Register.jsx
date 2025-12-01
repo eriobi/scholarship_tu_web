@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from '../axiosInstance'
 
 import Logo from "../assets/CSLogo-Square-White.png";
 
@@ -33,10 +33,7 @@ function Register() {
     setError("");
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/register",
-        inputData
-      );
+      const response = await axiosInstance.post("/register", inputData);
       setMessage(response.data.message);
       navigate("/login");
     } catch (err) {
@@ -147,9 +144,9 @@ function Register() {
               placeholder=""
               autoComplete="off"
               options={[
-                { label: "ต่ำกว่า 100,000", value: "0-100000" },
-                { label: "100,000-200,000", value: "100000-200000" },
-                { label: "200,000 ขึ้นไป", value: "200001" },
+                { label: "ต่ำกว่า 100,000", value: 100000 },
+                { label: "100,000-200,000", value: 100001 },
+                { label: "200,000 ขึ้นไป", value: 200001 },
               ]}
               value={inputData.income}
               onChange={(e) =>

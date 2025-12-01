@@ -61,8 +61,8 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
         std_year: data.std_year || "",
         std_gpa: data.std_gpa || "",
         std_income: data.std_income || "",
-        startDate: data.start_date ? new Date(data.start_date) : null,
-        endDate: data.end_date ? new Date(data.end_date) : null,
+        startDate: data.start_date || "",
+        endDate: data.end_date || "",
         desp: data.scho_desp || "",
         file: data?.scho_file || null,
         image: data?.image_file || null,
@@ -79,22 +79,22 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
     >
       <div className="md:col-span-2">
         <Input
-        id="ทุน"
-        label="ชื่อทุนการศึกษา"
-        type="text"
-        name="schoName"
-        placeholder=""
-        required
-        pattern="text"
-        value={formData.schoName}
-        onChange={handleChange}
-      />
+          id="ทุน"
+          label="ชื่อทุนการศึกษา"
+          type="text"
+          name="schoName"
+          placeholder=""
+          required
+          pattern="text"
+          value={formData.schoName}
+          onChange={handleChange}
+        />
       </div>
-      
+
       <Input
         id="ปี"
         label="ปีการศึกษา"
-        type="text"
+        type="number"
         name="schoYear"
         placeholder=""
         required
@@ -256,23 +256,21 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
       </span>
 
       <div className="md:col-span-2 grid grid-cols-2 gap-2 mt-4">
-        
-          <button
-            type="submit"
-            className="bg-purple-800 hover:bg-purple-900 w-full text-white px-8 py-2 rounded-lg font-medium shadow"
-          >
-            บันทึกข้อมูล
-          </button>
-        
-          <button
-            type="button"
-            onClick={onCancel}
-            className="w-full bg-gray-200 hover:bg-gray-300 px-8 py-2 rounded-lg font-medium"
-          >
-            ยกเลิก
-          </button>
-        </div>
-      
+        <button
+          type="submit"
+          className="bg-purple-800 hover:bg-purple-900 w-full text-white px-8 py-2 rounded-lg font-medium shadow"
+        >
+          บันทึกข้อมูล
+        </button>
+
+        <button
+          type="button"
+          onClick={onCancel}
+          className="w-full bg-gray-200 hover:bg-gray-300 px-8 py-2 rounded-lg font-medium"
+        >
+          ยกเลิก
+        </button>
+      </div>
     </form>
   );
 }
