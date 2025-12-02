@@ -62,10 +62,10 @@ function NewsCard() {
             {selectedNews.news_file && (
               
               <a
-                href={`http://localhost:5000/uploads/${selectedNews.news_file}`}
+               href={`http://localhost:5100/uploads/news/${selectedNews.news_file}`}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-block mt-4 px-4 py-2 rounded-lg bg-[#219B9D] text-white text-center hover:bg-[#08595b]"
+                className="block w-full mt-4 px-4 py-2 rounded-lg bg-[#219B9D] text-white text-center hover:bg-[#08595b]"
               >
                 ดาวน์โหลดเอกสาร
               </a>

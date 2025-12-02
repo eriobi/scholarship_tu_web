@@ -25,6 +25,7 @@ export const getAllScholarship = async (req, res) => {
       FROM scholarship_info s
       LEFT JOIN qualification q 
         ON s.qualification = q.qua_id
+        WHERE s.is_active = 1
       ORDER BY s.created_at DESC
     `);
     res.json(rows);

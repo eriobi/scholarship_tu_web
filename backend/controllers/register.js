@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 
 const register = async (req, res) => {
     const { firstName, lastName, StdId, year, gpa, income, lineId, email, password, } = req.body;
+    
 
     /* กรอกข้อมูลหรือยัง */
     if (!firstName || !lastName || !StdId || !email || !password) {
@@ -37,6 +38,7 @@ const register = async (req, res) => {
         /* commit  */
         await connection.commit();
         res.status(201).json({ message: 'registered succesfully', userId })
+        
 
     } catch (err) {
         /* ย้อนกลับ = ไม่บันทึกข้อมูลทั้งหมด */

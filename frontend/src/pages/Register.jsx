@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axiosInstance from '../axiosInstance'
+import axiosInstance from "../axiosInstance";
 
 import Logo from "../assets/CSLogo-Square-White.png";
 
@@ -49,7 +49,7 @@ function Register() {
   const [error, setError] = useState(""); // เอาไว้โชว์ error
 
   return (
-    <div className="min-h-full min-w-full bg-gradient-to-tr from-amber-200 via-amber-200 to-red-400 flex items-center justify-center px-6 py-12 ">
+    <div className="min-h-full min-w-full bg-linear-to-tr from-amber-200 via-amber-200 to-red-400 flex items-center justify-center px-6 py-12 ">
       <div className="flex w-200 h-max flex-col justify-center px-6 py-12 lg:px-8 bg-white rounded-xl shadow-xl">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img src={Logo} alt="" className="mx-auto h-20 w-auto" />
@@ -96,7 +96,7 @@ function Register() {
             <InputBox
               id="StdId"
               label="รหัสนักศึกษา"
-              type="text"
+              type="number"
               name="StdId"
               placeholder=""
               required
@@ -108,6 +108,7 @@ function Register() {
                 setInputData({ ...inputData, StdId: e.target.value })
               }
             />
+            
             <InputBox
               id="year"
               label="ชั้นปีที่"
@@ -139,15 +140,10 @@ function Register() {
             <InputBox
               id="income"
               label="รายได้ต่อปี"
-              type="text"
-              name="income"
+              type="number"
+              name="std_income"
               placeholder=""
-              autoComplete="off"
-              options={[
-                { label: "ต่ำกว่า 100,000", value: 100000 },
-                { label: "100,000-200,000", value: 100001 },
-                { label: "200,000 ขึ้นไป", value: 200001 },
-              ]}
+              pattern="number"
               value={inputData.income}
               onChange={(e) =>
                 setInputData({ ...inputData, income: e.target.value })

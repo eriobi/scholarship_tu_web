@@ -300,17 +300,17 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
                   {stats.desp && (
                     <div className="mt-4 px-2 text-gray-700">
                       <h3 className="font-semibold mb-1">คำอธิบายทุน:</h3>
-                      <p>{stats.desp}</p>
+                      <p className="max-h-[200px] overflow-y-auto  whitespace-pre-line leading-relaxed">{stats.desp}</p>
                     </div>
                   )}
 
                   {/* ดาวน์โหลดไฟล์รายละเอียดทุน */}
                   {scho_file && (
                     <a
-                      href={`http://localhost:5000/uploads/${scho_file}`}
+                      href={`http://localhost:5100/uploads/${scho_file}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-block mt-4 px-4 py-2 rounded-lg bg-[#219B9D] text-white text-center hover:bg-[#08595b]"
+                      className="block w-full mt-4 px-4 py-2 rounded-lg bg-[#219B9D] text-white text-center hover:bg-[#08595b]"
                     >
                       ดาวน์โหลดเอกสาร
                     </a>

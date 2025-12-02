@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Generation Time: Dec 01, 2025 at 11:35 PM
+-- Generation Time: Dec 02, 2025 at 12:15 AM
 -- Server version: 9.5.0
 -- PHP Version: 8.3.26
 
@@ -52,7 +52,7 @@ INSERT INTO `admin` (`Admin_id`, `user_id`, `adm_name`, `adm_lastname`, `created
 CREATE TABLE `admin_message` (
   `adm_mes_id` int NOT NULL,
   `admin_id` int NOT NULL,
-  `student_id` int NOT NULL,
+  `student_id` BIGINT(20) UNSIGNED NOT NULL,
   `mes_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `mes_desp` varchar(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `mes_status` varchar(225) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -79,7 +79,7 @@ INSERT INTO `admin_message` (`adm_mes_id`, `admin_id`, `student_id`, `mes_title`
 CREATE TABLE `admin_notification` (
   `adm_noti_id` int NOT NULL,
   `admin_id` int NOT NULL,
-  `student_id` int NOT NULL,
+  `student_id` BIGINT(20) UNSIGNED NOT NULL,
   `scholarship_id` int DEFAULT NULL,
   `noti_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `is_read` tinyint(1) NOT NULL DEFAULT '0',
@@ -106,7 +106,7 @@ INSERT INTO `admin_notification` (`adm_noti_id`, `admin_id`, `student_id`, `scho
 
 CREATE TABLE `bookmark` (
   `bookmark_id` int NOT NULL,
-  `student_id` int NOT NULL,
+  `student_id` BIGINT(20) UNSIGNED NOT NULL,
   `scho_id` int NOT NULL,
   `is_active` tinyint(1) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -128,7 +128,7 @@ INSERT INTO `bookmark` (`bookmark_id`, `student_id`, `scho_id`, `is_active`, `cr
 
 CREATE TABLE `enroll` (
   `enroll_id` int NOT NULL,
-  `std_id` int NOT NULL,
+  `std_id` BIGINT(20) UNSIGNED NOT NULL,
   `scho_id` int NOT NULL,
   `qua_id` int NOT NULL,
   `enroll_status` tinyint(1) NOT NULL,
@@ -167,7 +167,7 @@ CREATE TABLE `news` (
 INSERT INTO `news` (`news_id`, `news_title`, `news_content`, `news_file`, `created_at`, `updated_at`, `is_active`) VALUES
 (16, 'test ', 'ประกาศ', NULL, '2025-11-05 06:27:48', '2025-11-28 08:21:57', 0),
 (17, 'test 2', 'สวัสดี', NULL, '2025-11-05 06:30:01', '2025-11-28 08:21:57', 0),
-(19, 'ประกาศรายชื่อผู้สมควรได้รับทุนมูลนิธิอิออนประเทศไทย ประจำปีการศึกษา 2568', 'test', NULL, '2025-11-28 08:21:55', '2025-11-28 08:21:55', 1),
+(19, 'ประกาศรายชื่อผู้สมควรได้รับทุนมูลนิธิอิออนประเทศไทย ประจำปีการศึกษา 2568', 'test', '1764632705736-iOnThaiScholarship-2567.pdf', '2025-11-28 08:21:55', '2025-12-01 23:45:05', 1),
 (20, 'ประกาศ นักศึกษาใหม่โปรดเพิ่มเพื่อน LineOA  เพื่อรับข้อมูลรายละเอียดทุนการศึกษา', '', NULL, '2025-11-29 14:16:00', '2025-11-29 14:16:00', 1);
 
 -- --------------------------------------------------------
@@ -223,12 +223,12 @@ CREATE TABLE `scholarship_info` (
 --
 
 INSERT INTO `scholarship_info` (`scholarship_id`, `scho_name`, `scho_year`, `qualification`, `scho_type`, `scho_source`, `start_date`, `end_date`, `scho_desp`, `image_file`, `scho_file`, `is_active`, `created_at`, `updated_at`) VALUES
-(8, 'ทุนสำหรับนักเรียนขาดแคลนทรัพย์', 2568, 5, 'ทุนระยะยาว', 'ทุนภายใน', '2025-11-13', '2025-11-22', 'test ', '1763109390034-CSTU.png', '1763108548048-Screenshot 2025-05-07 065504.pdf', 1, '2025-11-12 08:46:07', '2025-11-28 07:59:38'),
-(9, 'ทุนโครงการคาเอเดะ', 2568, 6, 'ทุนเหมาจ่าย', 'ทุนภายนอก', '2025-10-15', '2025-10-30', 'มีจิตอาสา', NULL, NULL, 1, '2025-11-12 10:23:00', '2025-11-28 08:11:22'),
-(10, 'ทุนมูลนิธิอิออนประเทศไทย', 2568, 7, 'ทุนระยะยาว', 'ทุนภายนอก', '2025-01-14', '2025-02-07', 'นักศึกษาปีที่ 1 ให้เกรดเฉลี่ยของมัธยมปลายแทน', NULL, '1764291234595-scholarshipOfAeon-2568.pdf', 1, '2025-11-28 07:45:56', '2025-11-28 08:10:17'),
-(11, 'รับสมัครทุน บริษัท ซีคอน จำกัด ', 2568, 8, 'ทุนระยะยาว', 'ทุนภายนอก', '2025-01-14', '2025-02-07', '-ไม่เป็นนักศึกษาที่ได้รับทุนการศึกษาอื่นใด หรือกำลังอยู่ระหว่างรอรับทุน\r\n-เป็นนักศึกษาที่มีจิตอาสา มีคุณธรรม แต่ขาดแคลนทุนทรัพย์ในการศึกษา มีความประพฤติเรียบร้อย และไม่เคย\r\nถูกลงโทษทางวินัยเป็นนักศึกษาที่มีจิตอาสา มีคุณธรรม แต่ขาดแคลนทุนทรัพย์ในการศึกษา ม', NULL, '1764292185687-scholarshipOfSeacon-2025.pdf', 1, '2025-11-28 08:09:45', '2025-11-28 08:09:45'),
+(8, 'ทุนสำหรับนักเรียนขาดแคลนทรัพย์', 2568, 5, 'ทุนระยะยาว', 'ทุนภายใน', '2025-11-13', '2025-11-22', 'test ', '1763109390034-CSTU.png', '1763108548048-Screenshot 2025-05-07 065504.pdf', 0, '2025-11-12 08:46:07', '2025-12-02 00:00:00'),
+(9, 'ทุนโครงการคาเอเดะ', 2568, 6, 'ทุนเหมาจ่าย', 'ทุนภายนอก', '2025-10-15', '2025-10-30', 'มีจิตอาสา', NULL, NULL, 0, '2025-11-12 10:23:00', '2025-12-02 00:00:00'),
+(10, 'ทุนมูลนิธิอิออนประเทศไทย', 2568, 7, 'ทุนระยะยาว', 'ทุนภายนอก', '2025-01-14', '2025-02-07', 'นักศึกษาปีที่ 1 ให้เกรดเฉลี่ยของมัธยมปลายแทน', NULL, '1764291234595-scholarshipOfAeon-2568.pdf', 0, '2025-11-28 07:45:56', '2025-12-02 00:00:00'),
+(11, 'รับสมัครทุน บริษัท ซีคอน จำกัด ', 2568, 8, 'ทุนระยะยาว', 'ทุนภายนอก', '2025-01-14', '2025-02-07', '-ไม่เป็นนักศึกษาที่ได้รับทุนการศึกษาอื่นใด หรือกำลังอยู่ระหว่างรอรับทุน\r\n-เป็นนักศึกษาที่มีจิตอาสา มีคุณธรรม แต่ขาดแคลนทุนทรัพย์ในการศึกษา มีความประพฤติเรียบร้อย และไม่เคย\r\nถูกลงโทษทางวินัยเป็นนักศึกษาที่มีจิตอาสา มีคุณธรรม แต่ขาดแคลนทุนทรัพย์ในการศึกษา ม', NULL, '1764292185687-scholarshipOfSeacon-2025.pdf', 0, '2025-11-28 08:09:45', '2025-12-02 00:00:00'),
 (12, 'สมัครขอรับทุนภัยพิบัติ ปีการศึกษา 2568', 2568, 9, 'ทุนเหมาจ่าย', 'ทุนภายใน', '2025-01-01', '2025-12-31', '1. เป็นนักศึกษา มธ. ระดับปริญญาตรี\r\n2. นักศึกษา/ผู้ปกครองมีภูมิลำเนาในพื้นที่ประสบภัยพิบัติ\r\n3. มีความประพฤติดี\r\n4. ได้รับการรับรองจากหน่วยงานราชการ ว่าพื้นที่ที่อยู่อาศัยดังกล่าวอยู่ในเขตภัยพิบัติ', NULL, '1764292471311-20250218 à¹à¸à¸à¸à¸­à¸£à¹à¸¡à¸à¸­à¸à¸¸à¸à¸ à¸±à¸¢à¸à¸´à¸à¸±à¸à¸´.pdf', 1, '2025-11-28 08:14:31', '2025-11-28 08:14:31'),
-(13, 'ทุน บริษัท โตโยต้า มอเตอร์ ประเทศไทย จำกัด', 2566, 12, 'ทุนระยะยาว', 'ทุนภายนอก', '2024-09-29', '2024-10-10', '', NULL, '1764628954499-ToyotaMotorScholarship-2023.pdf', 1, '2025-12-01 22:42:34', '2025-12-01 23:01:37');
+(13, 'ทุน บริษัท โตโยต้า มอเตอร์ ประเทศไทย จำกัด', 2566, 12, 'ทุนระยะยาว', 'ทุนภายนอก', '2024-09-29', '2024-10-10', '', NULL, '1764628954499-ToyotaMotorScholarship-2023.pdf', 0, '2025-12-01 22:42:34', '2025-12-02 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -238,7 +238,7 @@ INSERT INTO `scholarship_info` (`scholarship_id`, `scho_name`, `scho_year`, `qua
 
 CREATE TABLE `std_notification` (
   `std_noti_id` int NOT NULL,
-  `student_id` int NOT NULL,
+  `student_id` BIGINT(20) UNSIGNED NOT NULL,
   `std_noti_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `scholarship_id` int DEFAULT NULL,
   `is_read` tinyint(1) NOT NULL DEFAULT '0',
@@ -266,7 +266,7 @@ INSERT INTO `std_notification` (`std_noti_id`, `student_id`, `std_noti_type`, `s
 --
 
 CREATE TABLE `student` (
-  `std_id` int NOT NULL,
+  `std_id` BIGINT(20) UNSIGNED NOT NULL,
   `user_id` int NOT NULL,
   `std_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `std_lastname` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -343,7 +343,7 @@ INSERT INTO `users_session` (`session_id`, `user_id`, `token`, `is_active`, `cre
 (65, 1, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6InNpcmltYS5rYXZAZ21haWwuY29tIiwiaWF0IjoxNzY0NDIyNjAxLCJleHAiOjE3NjUwMjc0MDF9._tKAM2WfOr95hU8LSEP3PjtjJ9ECZcRv28OJo3Sn93o', 1, '2025-11-29 13:23:21', '2025-11-29 13:23:21'),
 (69, 2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6ImRhd0BnbWFpbC5jb20iLCJpYXQiOjE3NjQ0MjU3NzUsImV4cCI6MTc2NTAzMDU3NX0.ysYzzKTJ5BQOisa86TeLzkH2pe3nqJH6hpJGtATtLdE', 1, '2025-11-29 14:16:15', '2025-11-29 14:16:15'),
 (84, 1, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6InNpcmltYS5rYXZAZ21haWwuY29tIiwiaWF0IjoxNzY0NTgyMzEzLCJleHAiOjE3NjUxODcxMTN9.2tqquoLVsb-0wpbWf9NUSf0Pzux_0G22gQ3-YCnrYTU', 1, '2025-12-01 09:45:13', '2025-12-01 09:45:13'),
-(87, 4, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo0LCJlbWFpbCI6InBpdGNoYXlhLmpAZ21haWwuY29tIiwiaWF0IjoxNzY0NjMwODY1LCJleHAiOjE3NjUyMzU2NjV9.0ivekuOcbFZVblGhd4MTqPbbbA0dX5iusTKvQatxaOo', 1, '2025-12-01 23:14:25', '2025-12-01 23:14:25');
+(88, 1, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6InNpcmltYS5rYXZAZ21haWwuY29tIiwiaWF0IjoxNzY0NjMyNDc2LCJleHAiOjE3NjUyMzcyNzZ9.TgFGMaX7B6paZmfVMwU3rjy_UXlpncf-M-kG4WhbdiI', 1, '2025-12-01 23:41:16', '2025-12-01 23:41:16');
 
 --
 -- Indexes for dumped tables
@@ -500,13 +500,13 @@ ALTER TABLE `std_notification`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users_session`
 --
 ALTER TABLE `users_session`
-  MODIFY `session_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
+  MODIFY `session_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
 
 --
 -- Constraints for dumped tables

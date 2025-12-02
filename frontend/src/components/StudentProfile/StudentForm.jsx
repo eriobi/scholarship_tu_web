@@ -82,12 +82,11 @@ function StudentForm({ student, setStudent, onSave }) {
       />
       <div className="md:col-span-2">
         <InputBox
-          id="รายได้ขั้นต่ำ"
-          label="รายได้ขั้นต่ำ"
+          id="รายได้ต่อปี"
+          label="รายได้ต่อปี"
           type="number"
           name="std_income"
           placeholder=""
-          required
           pattern="number"
           value={student.std_income || ""}
           onChange={handleChange}

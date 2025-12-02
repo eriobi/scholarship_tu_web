@@ -41,16 +41,9 @@ router.post(
   requestScholarshipInfo
 );
 
-/**
- * ข่าวประชาสัมพันธ์ (ทุกคนดูได้)
- */
 router.get("/news", getNews);
 
-/**
- *  สถิติของทุน
- * - ตอนนี้ตั้งให้ต้อง login ไว้ก่อน (เหมือนเวอร์ชันที่เธอเขียน)
- *   ถ้าอยากให้คนทั่วไปดูได้ค่อยลบ verifyToken ออกภายหลังได้
- */
-router.get("/scholarships/:id/stats", verifyToken, getScholarshipStats);
+
+router.get("/scholarships/:id/stats", getScholarshipStats);
 
 export default router;

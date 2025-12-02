@@ -37,13 +37,13 @@ const login = async (req, res) => {
         /* เก็บ token */
         const token = jwt.sign({ user_id: user.user_id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "7d" });
         await pool.execute(sqlSession, [user.user_id, token, true])
-
-
+        
         res.json({ message: 'Login successfully', token, role: user.role  })
 
     } catch (err) {
 
-        console.log(err)
+        //console.log(err)
+        console.log(await bcrypt.hash("1234", 10));
         return res.status(500).json({ message: 'Server error' })
 
     }

@@ -34,26 +34,6 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-
-axiosInstance.interceptors.response.use(
-  (response) => response,
-
-  (error) => {
-    /* ถ้า token หมดอายุ  */
-    if (error.response?.status === 401 || error.response?.status === 403) {
-      console.warn("หมดเวลาการเชื่อมต่อ");
-
-      // ลบ token ใน localStorage
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-
-      /*  ไปหน้า Login  */
-      window.location.href = "/login";
-    }
-
-    return Promise.reject(error);
-  }
-)
-
-
 export default axiosInstance;
+
+
