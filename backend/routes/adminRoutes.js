@@ -8,7 +8,7 @@ import {
   deleteScholarship,
 } from "../controllers/scholarshipManagement.js";
 
-import { getStudent } from "../controllers/studentManagement.js";
+import { getStudent , getStudentInfo } from "../controllers/studentManagement.js";
 
 import {
   getNews,
@@ -82,5 +82,7 @@ router.delete(
   verifyToken,
   deleteAdminNotification
 );
+
+router.get("/student/:id/full",getStudentInfo)
 
 export default router;

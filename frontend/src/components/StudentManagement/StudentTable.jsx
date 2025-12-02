@@ -1,7 +1,7 @@
 // frontend/src/components/StudentManagement/StudentTable.jsx
 import React, { useState } from "react";
 
-function StudentTable({ studentData }) {
+function StudentTable({ studentData, onOpenFullModal }) {
   // state สำหรับ popup LINE
   const [selectedStudent, setSelectedStudent] = useState(null);
 
@@ -60,42 +60,47 @@ function StudentTable({ studentData }) {
             >
               <td
                 scope="row"
-                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white cursor-pointer"
+                onClick={() => onOpenFullModal(e)}
               >
                 {e.std_name}
               </td>
 
               <td
                 scope="row"
-                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white cursor-pointer"
+                onClick={() => onOpenFullModal(e)}
               >
                 {e.std_lastname}
               </td>
 
               <td
                 scope="row"
-                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white cursor-pointer"
+                onClick={() => onOpenFullModal(e)}
               >
                 {e.std_id}
               </td>
 
               <td
                 scope="row"
-                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white cursor-pointer"
+                onClick={() => onOpenFullModal(e)}
               >
                 {e.std_year}
               </td>
 
               <td
                 scope="row"
-                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white cursor-pointer"
+                onClick={() => onOpenFullModal(e)}
               >
                 {e.std_gpa}
               </td>
 
               <td
                 scope="row"
-                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white "
               >
                 {e.is_active === 1 ? "ใช้งาน" : "ไม่มีสิทธิเข้าใช้งาน"}
               </td>
