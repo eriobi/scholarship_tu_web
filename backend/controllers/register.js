@@ -2,20 +2,20 @@ import pool from '../pool.js'
 import bcrypt from "bcryptjs";
 
 const register = async (req, res) => {
-    const { firstName, lastName, StdId, year, gpa, income, lineId, email, password, } = req.body;
-    
+    const { firstName, lastName, StdId, year, gpa, income, email, password, scholarship_interest } = req.body;
+
 
     /* กรอกข้อมูลหรือยัง */
     if (!firstName || !lastName || !StdId || !email || !password) {
         return res.status(400).json({ message: "data are required" });
     }
-    
+
 
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    const sqlUser = `INSERT INTO users (role,email,password,decryption,line_id,is_active) VALUES (?, ?, ?,?,?,?)`
-    const sqlStd = `INSERT INTO student (std_id,user_id,std_name,std_lastName,std_year,std_gpa,std_income) VALUES (?, ?, ?,?,?,?,?)`
-    
+    const sqlUser = `INSERT INTO users (role, email, password, decryption, is_active) VALUES (?, ?, ?, ?, ?)`;
+    const sqlStd = `INSERT INTO student (std_id,user_id,std_name,std_lastName,std_year,std_gpa,std_income,scholarship_interest) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+
     let connection;
     const role = "student";
 
@@ -25,20 +25,29 @@ const register = async (req, res) => {
         connection = await pool.getConnection();
         await connection.beginTransaction();
 
-        const [userResults] = await connection.execute(sqlUser, [role,email,hashedPassword,'', lineId, true])
+        const [userResults] = await connection.execute(sqlUser, [role, email, hashedPassword, '', true])
 
         const userId = userResults.insertId;
 
         /* await connection.execute(sqlSession, [userId, token, true, hashedPassword]) */
 
         if (role === 'student') {
-            await connection.execute(sqlStd, [StdId, userId, firstName, lastName, year, gpa, income])
+            await connection.execute(sqlStd, [
+                StdId,
+                userId,
+                firstName,
+                lastName,
+                year,
+                gpa,
+                income,
+                scholarship_interest
+            ])
         }
 
         /* commit  */
         await connection.commit();
         res.status(201).json({ message: 'registered succesfully', userId })
-        
+
 
     } catch (err) {
         /* ย้อนกลับ = ไม่บันทึกข้อมูลทั้งหมด */

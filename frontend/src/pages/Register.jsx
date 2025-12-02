@@ -15,7 +15,7 @@ function Register() {
     StdId: "",
     gpa: "",
     income: "",
-    lineId: "",
+    scholarship_interest: "",
     email: "",
     password: "",
   });
@@ -149,18 +149,18 @@ function Register() {
                 setInputData({ ...inputData, income: e.target.value })
               }
             />
-            <InputBox
-              id="lineId"
-              label="Line Id"
-              type="text"
-              name="lineId"
-              placeholder="ras7897"
+          
+             <InputBox
+              id="scholarship_interest"
+              label="ความสนใจในการสมัครทุน"
+              type="number"
+              name="scholarship_interest"
+              placeholder=""
               autoComplete="off"
-              maxLength={20}
-              pattern=""
-              value={inputData.lineId}
+              options={["1", "2", "3", "4","5"]}
+              value={inputData.scholarship_interest}
               onChange={(e) =>
-                setInputData({ ...inputData, lineId: e.target.value })
+                setInputData({ ...inputData, scholarship_interest: e.target.value })
               }
             />
             <InputBox

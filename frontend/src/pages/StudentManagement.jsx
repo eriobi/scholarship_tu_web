@@ -1,17 +1,15 @@
-import React , { useState , useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 
-import StudentTable from '../components/StudentManagement/StudentTable'
-import SocialButton from '../components/button/SocialButton'
-
+import StudentTable from "../components/StudentManagement/StudentTable";
+import SocialButton from "../components/button/SocialButton";
 
 import axiosInstance from "../axiosInstance";
 
 const StudentManagement = () => {
-
   const API_URL = "/admin/student";
   const [student, setStudent] = useState([]);
 
-   /* get ทุน */
+  /* get ทุน */
   useEffect(() => {
     fetchStudent();
   }, []);
@@ -26,26 +24,45 @@ const StudentManagement = () => {
     }
   };
 
+  /* filter */
+  const [filterInterest, setFilterInterest] = useState("");
+  let display = student.slice(); //copy arr std
+  if (filterInterest === "desc") {
+    display.sort((a, b) => b.scholarship_interest - a.scholarship_interest);
+  }
+  if (filterInterest === "asc") {
+    display.sort((a, b) => a.scholarship_interest - b.scholarship_interest);
+  }
+
   return (
-    <div className='bg-gray-50 min-h-screen flex flex-col'>
+    <div className="bg-gray-50 min-h-screen flex flex-col">
       <h2 className="text-lg font-semibold text-center  text-gray-900 p-8">
         จัดการนักศึกษา
       </h2>
 
+      <div className="w-full max-w-[80%] mx-auto flex gap-4 py-4 justify-end">
+        <select
+        className="w-80 shadow border border-gray-200
+               focus:outline-none focus:ring-2 focus:ring-purple-700
+               text-gray-700 rounded-lg"
+        value={filterInterest}
+        onChange={(e) => setFilterInterest(e.target.value)}
+      >
+        <option value="">เรียงลำดับความสนใจทุน</option>
+        <option value="desc">สนใจสมัครทุนมากที่สุด</option>
+        <option value="asc">สนใจสมัครทุนน้อยที่สุด</option>
+      </select>
+
+      </div>
       
 
       <div className="flex justify-center w-full max-w-full h-auto">
         <div className="w-[80%] mx-auto">
-          
-          <StudentTable
-          studentData={student}
-        />
-
+          <StudentTable studentData={display} />
         </div>
       </div>
-      
     </div>
-  )
-}
+  );
+};
 
-export default StudentManagement
+export default StudentManagement;
