@@ -88,14 +88,28 @@ export const getAdminDashboard = async (req, res) => {
     `);
 
     const [currentYearLevelStats] = await connection.execute(`
-  SELECT st.std_year, COUNT(DISTINCT e.std_id) AS total
-  FROM enroll e
-  JOIN student st ON e.std_id = st.std_id
-  JOIN scholarship_info s ON e.scho_id = s.scholarship_id
-  WHERE e.enroll_status = 1 AND s.scho_year = ?
-  GROUP BY st.std_year
-  ORDER BY st.std_year
-`, [current_year]);
+    SELECT st.std_year, COUNT(DISTINCT e.std_id) AS total
+    FROM enroll e
+    JOIN student st ON e.std_id = st.std_id
+    JOIN scholarship_info s ON e.scho_id = s.scholarship_id
+    WHERE e.enroll_status = 1 AND s.scho_year = ?
+    GROUP BY st.std_year
+    ORDER BY st.std_year`, 
+    [current_year]);
+
+    /* bookmark */
+    const [bookmarkStats] = await pool.execute(`
+    SELECT
+        s.scholarship_id AS scho_id,
+        s.scho_name,
+        COUNT(b.scho_id) AS total
+    FROM scholarship_info s
+    LEFT JOIN bookmark b ON s.scholarship_id = b.scho_id
+    GROUP BY s.scholarship_id, s.scho_name
+    ORDER BY total DESC
+    LIMIT 10
+`);
+
 
     return res.json({
       total_scholarship,
@@ -109,7 +123,9 @@ export const getAdminDashboard = async (req, res) => {
       currentYearLevelStats,
       enrollByYear,
       studentByYear,
+      bookmarkStats
     });
+    
 
   } catch (err) {
     console.error(err);

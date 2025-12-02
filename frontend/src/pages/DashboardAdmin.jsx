@@ -72,44 +72,33 @@ const DashboardAdmin = () => {
   };
 
   /* bar */
-  const yearLevels = [1, 2, 3, 4];
-  const barColors = ["#2196F3", "#4CAF50", "#FF9800", "#E91E63"];
-
-const barChart = {
-  labels: ["จำนวนผู้ได้รับทุน"],   // ให้เป็นแกนเดียว เพราะเราใช้หลาย dataset
-  datasets: yearLevels.map((year, index) => {
-    const found = data.currentYearLevelStats.find(
-      (x) => parseInt(x.std_year) === year
-    );
-
-    return {
-      label: `นักศึกษาชั้นปี ${year}`,   // แสดงเป็น legend
-      data: [found ? found.total : 0],     // ถ้ามีค่าเดียว
-      backgroundColor: barColors[index],   // สีตรงกับปีนั้นๆ
-    };
-  }),
-  options: {
-  plugins: {
-    legend: {
-      position: "bottom",
-      labels: {
-        usePointStyle: true,
-        pointStyle: "rect",
-        padding: 20,
-        boxWidth: 16,
-        boxHeight: 16,
-      },
+const bookmarkChart = {
+  labels: data.bookmarkStats.map((x) => x.scho_name),
+  datasets: [
+    {
+      label: "จำนวน Bookmark",
+      data: data.bookmarkStats.map((x) => x.total),
+      backgroundColor: "#219B9D",
+      borderRadius: 8,
+      barThickness: 50,
     },
-  },
-    scales: {
-      x: { grid: { display: false } },
-      y: {
-        beginAtZero: true,
-        grid: { color: "#e5e7eb" },
-      },
-    },
-  },
+  ],
 };
+
+const bookmarkOptions = {
+  plugins: {
+    legend: { display: false },
+  },
+  scales: {
+    y: {
+      beginAtZero: true,
+    },
+    x: {
+      grid: { display: false },
+    },
+  },
+}
+
 
   /* line */
   const lineChart = {
@@ -239,9 +228,9 @@ const barChart = {
         {/* Bar */}
         <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
           <h2 className="font-semibold mb-4">
-            จำนวนผู้ได้รับทุน ปี {data.current_year}
+           ทุนที่ถูก Bookmark มากที่สุด
           </h2>
-          <Bar data={barChart} options={barChart.options} />
+          <Bar data={bookmarkChart} options={bookmarkOptions} />
         </div>
 
         {/* line */}
