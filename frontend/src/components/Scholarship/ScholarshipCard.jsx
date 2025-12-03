@@ -80,6 +80,13 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
       "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300 w-20",
   };
 
+  /* รูปแบบชั้นปี */
+  const formatStdYear = (y) => {
+    if (y < 0) return `รับเฉพาะปีที่ ${Math.abs(y)}`;
+    if (y === 0) return "ทุกชั้นปี";
+    return `ชั้นปีที่ ${y} ขึ้นไป`;
+  };
+
   const imageStyles = image[scho_source] || image.default;
 
   /* ---------- bookmark ---------- */
@@ -120,8 +127,7 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
 
       onEnroll?.(id);
     } catch (err) {
-      const msg =
-        err.response?.data?.message || "เกิดข้อผิดพลาดในระบบ";
+      const msg = err.response?.data?.message || "เกิดข้อผิดพลาดในระบบ";
       console.log("Request-info error:", msg);
       setErrMessage(msg);
     }
@@ -154,10 +160,7 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
         labels: ["ได้รับทุน", "ไม่ได้รับทุน"],
         datasets: [
           {
-            data: [
-              Number(stats.approved),
-              Number(stats.rejected),
-            ],
+            data: [Number(stats.approved), Number(stats.rejected)],
             backgroundColor: ["#4CAF50", "#F44336"],
             hoverBackgroundColor: ["#66BB6A", "#EF5350"],
           },
@@ -238,7 +241,7 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
               เกรดเฉลี่ยที่ขั้นต่ำ <span className="text-black">{std_gpa}</span>
             </p>
             <p className="mb-1">
-              ชั้นปีที่ <span className="text-black">{std_year}</span>
+              ชั้นปีที่ <span className="text-black">{formatStdYear(std_year)}</span>
             </p>
             <p className="mb-1">
               รายได้ขั้นต่ำ <span className="text-black">{std_income}</span>
@@ -300,7 +303,9 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
                   {stats.desp && (
                     <div className="mt-4 px-2 text-gray-700">
                       <h3 className="font-semibold mb-1">คำอธิบายทุน:</h3>
-                      <p className="max-h-[200px] overflow-y-auto  whitespace-pre-line leading-relaxed">{stats.desp}</p>
+                      <p className="max-h-[200px] overflow-y-auto  whitespace-pre-line leading-relaxed">
+                        {stats.desp}
+                      </p>
                     </div>
                   )}
 
