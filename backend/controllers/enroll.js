@@ -37,9 +37,24 @@ const enroll = async (req, res) => {
     /* เช็คคุณสมบัติ */
     const qualify = schoRows[0];
 
-    // ปีการศึกษา
-    if (student.std_year < qualify.req_year) {
-      return res.status(400).json({ message: "ชั้นปีไม่ถึงเกณฑ์" });
+    /* ปี */
+    const reqYear = qualify.req_year;
+
+    /* รับเฉพาะปี ที่ให้น้อยกว่า 0 เพราะเรากำหนดให้รับเฉพาะเป็นเลขติดลบ */
+    if (reqYear < 0) {
+      const exact = Math.abs(reqYear);
+
+      if (student.std_year !== exact) {
+        return res.status(400).json({
+          message: `รับเฉพาะนักศึกษาชั้นปี ${exact} เท่านั้น`,
+        });
+      }
+    } else {
+      if (student.std_year < reqYear) {
+        return res.status(400).json({
+          message: `ชั้นปีไม่ถึงเกณฑ์ (ต้องเป็นปี ${reqYear} ขึ้นไป)`,
+        });
+      }
     }
 
     /* เกรด */
@@ -49,13 +64,13 @@ const enroll = async (req, res) => {
 
     /* รายได้ */
     const income = student.std_income;
-    const reqIncome = qualify.req_income;  
-    
+    const reqIncome = qualify.req_income;
+
     /* ถ้า reqIncome > 0  */
     if (reqIncome > 0 && income > reqIncome) {
       return res.status(400).json({ message: "รายได้มากกว่าเกณฑ์ที่กำหนด" });
     }
-    
+
     /* เช็คว่าสมัครไปแล้วหรือยัง */
     const [exists] = await connection.execute(
       "SELECT * FROM enroll WHERE std_id = ? AND scho_id = ?",
