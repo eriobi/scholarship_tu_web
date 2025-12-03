@@ -58,9 +58,9 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
         schoYear: data.scho_year || "",
         type: data.scho_type || "",
         source: data.scho_source || "",
-        std_year: data.std_year || "",
-        std_gpa: data.std_gpa || "",
-        std_income: data.std_income || "",
+        std_year: data.std_year ?? "",
+        std_gpa: data.std_gpa ?? "",
+        std_income: data.std_income ?? "",
         startDate: data.start_date || "",
         endDate: data.end_date || "",
         desp: data.scho_desp || "",
@@ -101,6 +101,19 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
         pattern="number"
         value={formData.schoYear}
         onChange={handleChange}
+        options={[
+          { label: "2568", value: 2568 },
+          { label: "2569", value: 2569 },
+          { label: "2570", value: 2570 },
+          { label: "2571", value: 2571 },
+          { label: "2572", value: 2572 },
+          { label: "2573", value: 2573 },
+          { label: "2574", value: 2574 },
+          { label: "2575", value: 2575 },
+          { label: "2576", value: 2576 },
+          { label: "2577", value: 2577 },
+          { label: "2578", value: 2578 },
+        ]}
       />
 
       <Input
@@ -133,7 +146,6 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
         type="text"
         name="std_year"
         placeholder=""
-        required
         value={formData.std_year}
         onChange={handleChange}
         options={[
@@ -151,7 +163,6 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
         type="number"
         name="std_gpa"
         placeholder=""
-        required
         pattern="decimal"
         value={formData.std_gpa || data?.std_gpa}
         onChange={handleChange}
@@ -160,18 +171,11 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
       <Input
         id="รายได้ขั้นต่ำ"
         label="รายได้ขั้นต่ำ"
-        type="text"
+        type="number"
         name="std_income"
-        placeholder=""
-        required
-        value={formData.std_income || data?.std_income}
+        placeholder="150000"
+        value={formData.std_income}
         onChange={handleChange}
-        options={[
-          { label: "ไม่มีขั้นต่ำ", value: "0" },
-          { label: "ไม่ได้ระบุชัดเจน", value: "ไม่ได้ระบุชัดเจน" },
-          { label: "ต่ำกว่า 100,000 บาท", value: "ต่ำกว่า 100,000 บาท" },
-          { label: "ไม่เกิน 200,000 บาท", value: "ไม่เกิน 200,000 บาท" },
-        ]}
       />
 
       <Datepicker
