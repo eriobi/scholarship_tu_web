@@ -59,9 +59,9 @@ export const getScholarshipStats = async (req, res) => {
                     year_ok: student.std_year >= req.std_year,
                     gpa_ok: student.std_gpa >= req.std_gpa,
                     income_ok:
-                        req.std_income === "ไม่ได้ระบุชัดเจน"
+                        req.std_income === 0 // =ไม่จำกัดรายได้
                             ? true
-                            : student.std_income <= parseInt(req.std_income.replace(/\D/g, ""), 10),
+                            : student.std_income <= req.std_income,
                 };
             }
 
