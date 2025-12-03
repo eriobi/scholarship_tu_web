@@ -118,7 +118,7 @@ const ScholarshipsManagement = () => {
       </Modal>
 
       <div className="flex justify-center w-full max-w-full h-auto">
-        <div className="w-[80%] mx-auto">
+        <div className="w-[90%] mx-auto">
           <div className="justify-end flex gap-2 mb-1 items-center">
             <ActionButton
             action="delete"
