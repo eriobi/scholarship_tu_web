@@ -5,8 +5,13 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // เลือก host ให้ถูกสำหรับ local / container
+const host =
+  process.env.ENV === "container"
+    ? "db" // ชื่อ service ใน docker-compose
+    : process.env.DB_HOST || "localhost";
+
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,   // <<< fix ตรงนี้
+  host,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
