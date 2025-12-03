@@ -47,36 +47,15 @@ const enroll = async (req, res) => {
       return res.status(400).json({ message: "GPA ไม่ถึงเกณฑ์" });
     }
 
-    /* รายได้ (เวอร์ชันใหม่: รองรับเฉพาะ "ไม่เกิน X") */
-    let reqIncome = qualify.req_income?.trim();
+    /* รายได้ */
     const income = student.std_income;
-
-    // กรณีที่ข้ามการตรวจรายได้
-    if (
-      !reqIncome || 
-      reqIncome === "0" ||
-      reqIncome === "ไม่มีขั้นต่ำ" ||
-      reqIncome === "ไม่ได้ระบุชัดเจน"
-    ) {
-      // ไม่ตรวจรายได้
-    } else {
-      // แปลงค่าเป็นตัวเลขล้วน เช่น "200000"
-      const maxIncome = parseInt(reqIncome.replace(/\D/g, ""), 10);
-
-      if (isNaN(maxIncome)) {
-        return res
-          .status(400)
-          .json({ message: "เงื่อนไขรายได้ของทุนไม่ถูกต้อง" });
-      }
-
-      // ตรวจ: รายได้ต้อง <= req_income
-      if (income > maxIncome) {
-        return res
-          .status(400)
-          .json({ message: "รายได้มากกว่าเกณฑ์ที่กำหนด" });
-      }
+    const reqIncome = qualify.req_income;  
+    
+    /* ถ้า reqIncome > 0  */
+    if (reqIncome > 0 && income > reqIncome) {
+      return res.status(400).json({ message: "รายได้มากกว่าเกณฑ์ที่กำหนด" });
     }
-
+    
     /* เช็คว่าสมัครไปแล้วหรือยัง */
     const [exists] = await connection.execute(
       "SELECT * FROM enroll WHERE std_id = ? AND scho_id = ?",
