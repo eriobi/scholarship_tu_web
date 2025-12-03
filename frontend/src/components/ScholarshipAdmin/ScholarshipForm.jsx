@@ -153,7 +153,10 @@ function ScholarshipForm({ onSubmit, onCancel, data = {} }) {
           { label: "ปี 1 ขึ้นไป", value: 1 },
           { label: "ปี 2 ขี้นไป", value: 2 },
           { label: "ปี 3 ขึ้นไป", value: 3 },
-          { label: "รับเฉพาะปีที่ 4", value: 4 },
+          { label: "รับเฉพาะปีที่ 1", value: -1 },
+          { label: "รับเฉพาะปีที่ 2", value: -2 },
+          { label: "รับเฉพาะปีที่ 3", value: -3 },
+          { label: "รับเฉพาะปีที่ 4", value: -4 },
         ]}
       />
 
