@@ -100,7 +100,7 @@ export const createScholarship = async (req, res) => {
 
   const start_date = normalizeDate(startDate);
   const end_date = normalizeDate(endDate);
-  
+
   const sqlAdd = `INSERT INTO scholarship_info 
     (scho_name, scho_year, qualification, scho_type, scho_source, start_date, end_date, scho_desp, scho_file, image_file, is_active) 
     VALUES (?,?,?,?,?,?,?,?,?,?,?)`;
@@ -176,6 +176,9 @@ export const updateScholarship = async (req, res) => {
   const { id } = req.params;
   const updateData = req.body;
 
+  const stdYear = updateData.std_year === "" ? 0 : updateData.std_year;
+  const stdGpa = updateData.std_gpa === "" ? 0 : updateData.std_gpa;
+  const stdIncome = updateData.std_income === "" ? 0 : updateData.std_income;
   try {
     connection = await pool.getConnection();
     await connection.beginTransaction();
@@ -247,9 +250,9 @@ export const updateScholarship = async (req, res) => {
            SET std_year = ?, std_gpa = ?, std_income = ? 
            WHERE qua_id = ?`,
           [
-            updateData.std_year,
-            updateData.std_gpa,
-            updateData.std_income,
+            stdYear,
+            stdGpa,
+            stdIncome,
             quaId,
           ]
         );
