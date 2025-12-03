@@ -46,7 +46,7 @@ function ScholarshipTable({ scholarships, onEditClick, onStatusChange , selected
 }
 
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg ">
+    <div className="relative w-full shadow-md sm:rounded-lg ">
       {/* หัวตาราง */}
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 ">
@@ -93,6 +93,9 @@ function ScholarshipTable({ scholarships, onEditClick, onStatusChange , selected
 
             <th scope="col" id="status_header" className="px-6 py-3">
               สถานะทุน
+            </th>
+            <th scope="col" id="" className="px-6 py-3">
+              
             </th>
           </tr>
         </thead>
@@ -175,6 +178,14 @@ function ScholarshipTable({ scholarships, onEditClick, onStatusChange , selected
               >
                 {formatDate(e.end_date)}
               </th>
+
+              <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  {e.is_active === 1 ? (
+                    <span className="text-green-600">เปิดรับ</span>
+                  ) : (
+                    <span className="text-red-600">ปิดรับ</span>
+                  )}
+                </td>
 
                {/* toggle */}
               <th
