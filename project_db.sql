@@ -3,13 +3,13 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Generation Time: Dec 11, 2025 at 01:06 AM
+-- Generation Time: Dec 11, 2025 at 03:58 AM
 -- Server version: 9.5.0
 -- PHP Version: 8.3.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
-SET time_zone = "+07:00";
+SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -41,7 +41,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`Admin_id`, `user_id`, `adm_name`, `adm_lastname`, `created_at`, `updated_at`) VALUES
-(1, 1, 'สิริมา', 'กวีวัฒนากูร', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+(1, 1, 'adminName', 'adminLastname', '0000-00-00 00:00:00', '2025-12-11 03:58:21');
 
 -- --------------------------------------------------------
 
@@ -127,9 +127,7 @@ INSERT INTO `bookmark` (`bookmark_id`, `student_id`, `scho_id`, `is_active`, `cr
 (68, 680741145, 8, 1, '2025-12-02 13:11:42', '2025-12-02 13:11:42'),
 (69, 680741145, 12, 1, '2025-12-02 13:11:45', '2025-12-02 13:11:45'),
 (70, 6508907717, 8, 1, '2025-12-02 13:13:40', '2025-12-02 13:13:40'),
-(71, 6508907717, 12, 1, '2025-12-02 13:13:42', '2025-12-02 13:13:42'),
-(72, 680741145, 13, 1, '2025-12-03 05:05:42', '2025-12-03 05:05:42'),
-(75, 680741145, 11, 1, '2025-12-04 07:12:43', '2025-12-04 07:12:43');
+(71, 6508907717, 12, 1, '2025-12-02 13:13:42', '2025-12-02 13:13:42');
 
 -- --------------------------------------------------------
 
@@ -153,7 +151,7 @@ CREATE TABLE `enroll` (
 
 INSERT INTO `enroll` (`enroll_id`, `std_id`, `scho_id`, `qua_id`, `enroll_status`, `created_at`, `updated_at`) VALUES
 (6, 680741145, 8, 5, 1, '2025-11-14 18:51:05', '2025-12-03 05:06:07'),
-(7, 680741145, 9, 6, 1, '2025-11-21 09:26:47', '2025-12-04 07:13:30'),
+(7, 680741145, 9, 6, 0, '2025-11-21 09:26:47', '2025-12-11 03:14:38'),
 (13, 6508907717, 11, 8, 1, '2025-12-04 04:12:23', '2025-12-04 04:12:23'),
 (14, 6508907717, 10, 7, 1, '2025-12-04 04:13:39', '2025-12-04 04:13:39'),
 (15, 6708741454, 20, 5, 1, '2025-12-04 06:27:51', '2025-12-04 06:27:51');
@@ -181,8 +179,9 @@ CREATE TABLE `news` (
 INSERT INTO `news` (`news_id`, `news_title`, `news_content`, `news_file`, `created_at`, `updated_at`, `is_active`) VALUES
 (16, 'test ', 'ประกาศ', NULL, '2025-11-05 06:27:48', '2025-11-28 08:21:57', 0),
 (17, 'test 2', 'สวัสดี', NULL, '2025-11-05 06:30:01', '2025-11-28 08:21:57', 0),
-(19, 'ประกาศรายชื่อผู้สมควรได้รับทุนมูลนิธิอิออนประเทศไทย ประจำปีการศึกษา 2568', 'รายละเอียดข้างล่าง', '1764645578051-announcementNameOfRecipients-2566.pdf', '2025-11-28 08:21:55', '2025-12-02 03:19:38', 1),
-(20, 'ประกาศ นักศึกษาใหม่โปรดเพิ่มเพื่อน LineOA  เพื่อรับข้อมูลรายละเอียดทุนการศึกษา', 'test', NULL, '2025-11-29 14:16:00', '2025-12-04 07:07:23', 0);
+(19, 'ประกาศรับสมัครนักศึกษาผู้ขาดแคลนทุนทรัพย์ ประจำปีการศึกษา 2568', 'รายละเอียดข้างล่าง', '1764645578051-announcementNameOfRecipients-2566.pdf', '2025-11-28 08:21:55', '2025-12-11 02:44:48', 0),
+(20, 'ประกาศ นักศึกษาใหม่โปรดเพิ่มเพื่อน LineOA  เพื่อรับข้อมูลรายละเอียดทุนการศึกษา', 'test', NULL, '2025-11-29 14:16:00', '2025-12-04 07:07:23', 0),
+(24, 'ประกาศรายชื่อผู้สมควรได้รับทุนมูลนิธิอิออนประเทศไทย ประจำปีการศึกษา 2568', '', NULL, '2025-12-11 02:42:27', '2025-12-11 02:45:52', 1);
 
 -- --------------------------------------------------------
 
@@ -246,8 +245,7 @@ INSERT INTO `scholarship_info` (`scholarship_id`, `scho_name`, `scho_year`, `qua
 (10, 'ทุนมูลนิธิอิออนประเทศไทย', 2571, 7, 'ทุนระยะยาว', 'ทุนภายนอก', '2025-06-17', '2025-07-23', 'นักศึกษาปีที่ 1 ให้เกรดเฉลี่ยของมัธยมปลายแทน', NULL, '1764754727012-iOnThaiScholarship-2567.pdf', 1, '2025-11-28 07:45:56', '2025-12-04 06:24:29'),
 (11, 'รับสมัครทุน บริษัท ซีคอน จำกัด ', 2570, 8, 'ทุนระยะยาว', 'ทุนภายนอก', '2025-02-12', '2025-03-13', '-ไม่เป็นนักศึกษาที่ได้รับทุนการศึกษาอื่นใด หรือกำลังอยู่ระหว่างรอรับทุน\r\n-เป็นนักศึกษาที่มีจิตอาสา มีคุณธรรม แต่ขาดแคลนทุนทรัพย์ในการศึกษา มีความประพฤติเรียบร้อย และไม่เคย\r\nถูกลงโทษทางวินัยเป็นนักศึกษาที่มีจิตอาสา มีคุณธรรม แต่ขาดแคลนทุนทรัพย์ในการศึกษา ม', NULL, '1764292185687-scholarshipOfSeacon-2025.pdf', 1, '2025-11-28 08:09:45', '2025-12-04 06:24:07'),
 (12, 'สมัครขอรับทุนภัยพิบัติ ปีการศึกษา 2568', 2568, 9, 'ทุนเหมาจ่าย', 'ทุนภายใน', '2025-01-01', '2025-12-31', '1. เป็นนักศึกษา มธ. ระดับปริญญาตรี\r\n2. นักศึกษา/ผู้ปกครองมีภูมิลำเนาในพื้นที่ประสบภัยพิบัติ\r\n3. มีความประพฤติดี\r\n4. ได้รับการรับรองจากหน่วยงานราชการ ว่าพื้นที่ที่อยู่อาศัยดังกล่าวอยู่ในเขตภัยพิบัติ', NULL, '1764292471311-20250218 à¹à¸à¸à¸à¸­à¸£à¹à¸¡à¸à¸­à¸à¸¸à¸à¸ à¸±à¸¢à¸à¸´à¸à¸±à¸à¸´.pdf', 1, '2025-11-28 08:14:31', '2025-12-03 10:01:07'),
-(13, 'ทุน บริษัท โตโยต้า มอเตอร์ ประเทศไทย จำกัด', 2569, 12, 'ทุนระยะยาว', 'ทุนภายนอก', '2026-01-01', '2026-01-29', '', NULL, '1764796417528-ToyotaMotorScholarship-2023.pdf', 1, '2025-12-01 22:42:34', '2025-12-03 21:13:37'),
-(20, 'ทุนทดสอบปี 2569', 2569, 5, 'ทุนเหมาจ่าย', 'ทุนภายนอก', '2025-10-15', '2025-10-25', 'mock test', NULL, NULL, 0, '2025-12-03 21:04:54', '2025-12-04 06:19:38');
+(20, 'ทุนทดสอบปี 2569', 2569, 5, 'ทุนเหมาจ่าย', 'ทุนภายนอก', NULL, NULL, 'mock test', NULL, NULL, 0, '2025-12-03 21:04:54', '2025-12-11 03:06:31');
 
 -- --------------------------------------------------------
 
@@ -309,7 +307,15 @@ INSERT INTO `std_notification` (`std_noti_id`, `student_id`, `std_noti_type`, `s
 (47, 6708741454, 'SCHO_NEW', NULL, 0, '2025-12-04 07:10:37'),
 (51, 680741145, 'line_sent_detail', 12, 0, '2025-12-04 07:14:06'),
 (52, 680741145, 'line_sent_detail', 12, 0, '2025-12-11 00:02:22'),
-(53, 680741145, 'line_sent_detail', 13, 0, '2025-12-11 00:02:36');
+(53, 680741145, 'line_sent_detail', 13, 0, '2025-12-11 00:02:36'),
+(54, 680741145, 'new_news', NULL, 0, '2025-12-11 02:42:27'),
+(55, 6508907717, 'new_news', NULL, 0, '2025-12-11 02:42:27'),
+(56, 6309650916, 'new_news', NULL, 0, '2025-12-11 02:42:27'),
+(57, 6708741454, 'new_news', NULL, 0, '2025-12-11 02:42:27'),
+(61, 680741145, 'new_news', NULL, 0, '2025-12-11 02:48:02'),
+(62, 6508907717, 'new_news', NULL, 0, '2025-12-11 02:48:02'),
+(63, 6309650916, 'new_news', NULL, 0, '2025-12-11 02:48:02'),
+(64, 6708741454, 'new_news', NULL, 0, '2025-12-11 02:48:02');
 
 -- --------------------------------------------------------
 
@@ -385,6 +391,13 @@ CREATE TABLE `users_session` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users_session`
+--
+
+INSERT INTO `users_session` (`session_id`, `user_id`, `token`, `is_active`, `created_at`, `updated_at`) VALUES
+(144, 1, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJlbWFpbCI6InRlc3RBZG1pbkBnbWFpbC5jb20iLCJpYXQiOjE3NjU0MjI5MzYsImV4cCI6MTc2NjAyNzczNn0.-4pYfXB6ayuNzj9-eQG7mAqhf9xJqNHEvdM6pwYfjYg', 1, '2025-12-11 03:15:36', '2025-12-11 03:15:36');
 
 --
 -- Indexes for dumped tables
@@ -517,7 +530,7 @@ ALTER TABLE `enroll`
 -- AUTO_INCREMENT for table `news`
 --
 ALTER TABLE `news`
-  MODIFY `news_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `news_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `qualification`
@@ -535,7 +548,7 @@ ALTER TABLE `scholarship_info`
 -- AUTO_INCREMENT for table `std_notification`
 --
 ALTER TABLE `std_notification`
-  MODIFY `std_noti_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `std_noti_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -547,7 +560,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `users_session`
 --
 ALTER TABLE `users_session`
-  MODIFY `session_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=138;
+  MODIFY `session_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=145;
 
 --
 -- Constraints for dumped tables
