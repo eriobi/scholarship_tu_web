@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const line = require("@line/bot-sdk");
-const createPoolWithRetry = require("./db"); // <- db.js
+const createPoolWithRetry = require("./db"); // db.js
 
 const app = express();
 const PORT = Number(process.env.PORT || 3100);
@@ -22,10 +22,10 @@ console.log(
 
 const client = new line.Client(config);
 
-let db; // <-- จะเก็บ pool หลังจาก create
+let db;
 
 // -----------------------------
-// ฟังก์ชันหลัก
+// ฟังก์ชันหลัก : ติดต่อเจ้าหน้าที่
 // -----------------------------
 async function handleStudentContactMessage(event) {
   const lineUserId = event.source.userId;
@@ -39,6 +39,7 @@ async function handleStudentContactMessage(event) {
   let studentId = null;
 
   try {
+    // ดึงโปรไฟล์จาก LINE
     try {
       profile = await client.getProfile(lineUserId);
       lineDisplayName = profile?.displayName ?? null;
@@ -47,6 +48,7 @@ async function handleStudentContactMessage(event) {
       console.error("  getProfile error:", err.message);
     }
 
+    // หา student จาก DB
     try {
       const [rows] = await db.query(
         `SELECT std_id, std_name, std_lastname 
@@ -65,19 +67,23 @@ async function handleStudentContactMessage(event) {
       console.error("  find student error:", err);
     }
 
+    // -----------------------------
+    // สร้างข้อความที่จะส่งให้ admin
+    // -----------------------------
     const adminTitle = "ข้อความจาก LINE นักศึกษา";
 
     const adminBody = [
       student
-        ? ชื่อนักศึกษา: ${student.std_name} ${student.std_lastname}
+        ? `ชื่อนักศึกษา: ${student.std_name} ${student.std_lastname}`
         : `ยังไม่ได้ผูกกับข้อมูลนักศึกษาในระบบ`,
-      student ? รหัสนักศึกษา: ${student.std_id} : "",
+      student ? `รหัสนักศึกษา: ${student.std_id}` : "",
       `ชื่อ LINE: ${lineDisplayName ?? "-"}`,
       `ข้อความที่ส่งมา: ${text}`,
     ]
       .filter(Boolean)
       .join("\n");
 
+    // บันทึกข้อความนักศึกษาให้ admin
     try {
       await db.query(
         `INSERT INTO admin_message
@@ -90,6 +96,7 @@ async function handleStudentContactMessage(event) {
       console.error("  insert admin_message error:", err);
     }
 
+    // แจ้งเตือน admin
     try {
       await db.query(
         `INSERT INTO admin_notification
@@ -105,9 +112,13 @@ async function handleStudentContactMessage(event) {
     console.error("handleStudentContactMessage outer error:", err);
   }
 
+  // ตอบกลับนักศึกษา
   const replyText = student
-    ? ระบบได้รับข้อความของนักศึกษาแล้ว \nชื่อในระบบ: ${student.std_name} ${student.std_lastname} (${student.std_id})\nโปรดรอเจ้าหน้าที่ตอบกลับ
-    : `ระบบได้รับข้อความของนักศึกษาแล้ว\nถ้ายังไม่ได้ลงทะเบียน กรุณาใช้คำสั่ง "ลงทะเบียน รหัสนักศึกษา" ก่อนค่ะ`;
+    ? `ระบบได้รับข้อความของนักศึกษาแล้ว 
+ชื่อในระบบ: ${student.std_name} ${student.std_lastname} (${student.std_id})
+โปรดรอเจ้าหน้าที่ตอบกลับ`
+    : `ระบบได้รับข้อความของนักศึกษาแล้ว
+ถ้ายังไม่ได้ลงทะเบียน กรุณาใช้คำสั่ง "ลงทะเบียน รหัสนักศึกษา" ก่อนค่ะ`;
 
   try {
     await client.replyMessage(event.replyToken, {
@@ -126,21 +137,28 @@ async function handleStudentContactMessage(event) {
 app.get("/health", (_req, res) => res.send("ok"));
 
 app.use("/webhook", (req, _res, next) => {
-  console.log(`[REQ] ${req.method} ${req.url} hasSig=${!!req.headers["x-line-signature"]}`);
+  console.log(
+    `[REQ] ${req.method} ${req.url} hasSig=${!!req.headers["x-line-signature"]}`
+  );
   next();
 });
 
+// -----------------------------
+// BYPASS MODE
+// -----------------------------
 if (BYPASS) {
   app.post("/webhook", (req, res) => {
     console.log("🟢 BYPASS mode: return 200");
     res.sendStatus(200);
   });
 } else {
+  // -----------------------------
+  // WEBHOOK (ปกติ)
+  // -----------------------------
   app.post("/webhook", line.middleware(config), async (req, res) => {
     res.sendStatus(200);
 
     const events = req.body?.events || [];
-
     for (const e of events) {
       if (e.type !== "message" || e.message.type !== "text") continue;
 
@@ -151,9 +169,9 @@ if (BYPASS) {
       console.log(" incoming text:", JSON.stringify(normalized));
 
       try {
-        // -----------------------------
+
         // 1) ลงทะเบียน
-        // -----------------------------
+ 
         const reg = /^ลงทะเบียน\s*([0-9]{8,10})$/;
         const match = normalized.match(reg);
 
@@ -176,26 +194,25 @@ if (BYPASS) {
             [lineUserId, lineDisplayName, stdId]
           );
 
-          let replyText;
-          if (result.affectedRows > 0) {
-            replyText = `ลงทะเบียนสำเร็จแล้วสำหรับรหัส ${stdId}\nระบบจะส่งแจ้งเตือนทุนมาที่ LINE บัญชีนี้ค่ะ`;
-          } else {
-            replyText = `ไม่พบรหัสนักศึกษา ${stdId} ในระบบค่ะ`;
-          }
+          const replyText =
+            result.affectedRows > 0
+              ? `ลงทะเบียนสำเร็จแล้วสำหรับรหัส ${stdId}\nระบบจะส่งแจ้งเตือนทุนมาที่ LINE บัญชีนี้ค่ะ`
+              : `ไม่พบรหัสนักศึกษา ${stdId} ในระบบค่ะ`;
 
           await client.replyMessage(e.replyToken, {
             type: "text",
             text: replyText,
           });
+
           continue;
         }
-
-        // -----------------------------
         // 2) ทุนทั้งหมด
-        // -----------------------------
+        
         if (normalized === "ทุนทั้งหมด") {
           const [rows] = await db.query(
-            "SELECT scho_name FROM scholarship_info WHERE is_active = 1"
+            `SELECT scho_name 
+             FROM scholarship_info 
+             WHERE is_active = 1`
           );
 
           const msg =
@@ -211,9 +228,8 @@ if (BYPASS) {
           continue;
         }
 
-        // -----------------------------
         // 3) ติดต่อเจ้าหน้าที่
-        // -----------------------------
+      
         await handleStudentContactMessage(e);
       } catch (err) {
         console.error("handle error:", err);
@@ -240,9 +256,9 @@ app.use((err, req, res, next) => {
 // START SERVER
 // -----------------------------
 async function startServer() {
-  db = await createPoolWithRetry(); // <-- สำคัญ ต้อง await ก่อนใช้ db.query
+  db = await createPoolWithRetry();
   app.listen(PORT, "0.0.0.0", () => {
-    console.log("🚀 server :" + PORT + " ready");
+    console.log("server :" + PORT + " ready");
   });
 }
 
