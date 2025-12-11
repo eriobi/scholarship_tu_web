@@ -144,7 +144,7 @@ const StudentManagement = () => {
 
             {/* Enroll  */}
             <div className="py-2">
-              <h4 className="font-semibold ">รับสมัครทุน</h4>
+              <h4 className="font-semibold ">สถานะทุน</h4>
 
               {studentInfo.enroll.length > 0 ? (
                 studentInfo.enroll.map((s, i) => {
