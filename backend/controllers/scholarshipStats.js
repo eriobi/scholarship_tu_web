@@ -38,7 +38,7 @@ export const getScholarshipStats = async (req, res) => {
 
         let qualify = null;
 
-        /* ถ้าล็อกอินและเป็น student → เช็คคุณสมบัติ */
+        /* ถ้าล็อกอินและเป็น student ให้ เช็คคุณสมบัติ */
         if (userId) {
             const [[student]] = await connection.execute(
                 "SELECT std_year, std_gpa, std_income FROM student WHERE user_id = ?",

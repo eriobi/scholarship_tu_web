@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../axiosInstance";
 import { Pie, Bar, Line } from "react-chartjs-2";
 
+import { RiCheckboxBlankCircleFill } from "react-icons/ri";
+
 import {
   Chart as ChartJS,
   ArcElement,
@@ -72,40 +74,38 @@ const DashboardAdmin = () => {
   };
 
   /* bar */
-const bookmarkChart = {
-  labels: data.bookmarkStats.map((x) => x.scho_name),
-  datasets: [
-    {
-      label: "จำนวน Bookmark",
-      data: data.bookmarkStats.map((x) => x.total),
-      backgroundColor: "#219B9D",
-      borderRadius: 8,
-      barThickness: 50,
-    },
-  ],
-};
+  const bookmarkChart = {
+    labels: data.bookmarkStats.map((x) => x.scho_name),
+    datasets: [
+      {
+        label: "จำนวน Bookmark",
+        data: data.bookmarkStats.map((x) => x.total),
+        backgroundColor: "#219B9D",
+        borderRadius: 8,
+      },
+    ],
+  };
 
-const bookmarkOptions = {
-  plugins: {
-    legend: { display: false },
-  },
-  scales: {
-    y: {
-      beginAtZero: true,
+  const bookmarkOptions = {
+    plugins: {
+      legend: { display: false },
     },
-    x: {
-      grid: { display: false },
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+      x: {
+        grid: { display: false },
+      },
     },
-  },
-}
-
+  };
 
   /* line */
   const lineChart = {
     labels: data.enrollByYear.map((x) => x.scho_year),
     datasets: [
       {
-        label: "จำนวนผู้ได้รับทุนในปีที่ผ่านมา",
+        label: "จำนวนผู้ได้รับทุนการศึกษาต่อปี",
         data: data.enrollByYear.map((x) => x.total),
         borderColor: "#E91E63",
         borderWidth: 3,
@@ -114,6 +114,18 @@ const bookmarkOptions = {
       },
     ],
   };
+
+  const lineOptions = {
+  scales: {
+    y: {
+      beginAtZero: true,
+      ticks: {
+        stepSize: 1,
+        precision: 0,
+      },
+    },
+  },
+};
 
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col p-6">
@@ -221,22 +233,30 @@ const bookmarkOptions = {
           <div className="w-[350px] h-[350px] mx-auto">
             <Pie data={pieChart} options={pieOptions} />
           </div>
+          <span>
+            <div className="flex items-center gap-1 py-2">
+              <RiCheckboxBlankCircleFill className="text-green-500 text-xs" />
+              <span>= จำนวนนักศึกษาที่ได้รับทุน</span>
+            </div>
+            <div className="flex items-center gap-1 py-1">
+              <RiCheckboxBlankCircleFill className="text-red-500 text-xs" />
+              <span>= จำนวนนักศึกษาที่ไม้ได้รับทุน</span>
+            </div>
+          </span>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         {/* Bar */}
         <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-          <h2 className="font-semibold mb-4">
-           ทุนที่ถูก Bookmark มากที่สุด
-          </h2>
+          <h2 className="font-semibold mb-4">ทุนที่ถูก Bookmark มากที่สุด</h2>
           <Bar data={bookmarkChart} options={bookmarkOptions} />
         </div>
 
         {/* line */}
         <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-          <h2 className="font-semibold mb-4">จำนวนผู้ได้รับทุนในปีที่ผ่านมา</h2>
-          <Line data={lineChart} />
+          <h2 className="font-semibold mb-4">จำนวนผู้ได้รับทุนการศึกษาต่อปี</h2>
+          <Line data={lineChart} options={lineOptions} />
         </div>
       </div>
     </div>

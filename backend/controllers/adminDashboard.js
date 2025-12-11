@@ -24,14 +24,6 @@ export const getAdminDashboard = async (req, res) => {
       GROUP BY scho_source
     `);
 
-    /* จำนวนทุนต่อปีการศึกษา */
-    const [yearStats] = await connection.execute(`
-      SELECT scho_year, COUNT(*) AS total
-      FROM scholarship_info
-      GROUP BY scho_year
-      ORDER BY scho_year DESC
-    `);
-
     /* จำนวนนศที่สมัครทุน */
     const [[{ total_enroll }]] = await connection.execute(`
       SELECT COUNT(*) AS total_enroll FROM enroll
@@ -60,19 +52,6 @@ export const getAdminDashboard = async (req, res) => {
     ORDER BY std_year
     `)
 
-    /* นศแต่ละชั้นปีที่ได้รับทุน (แยกตามปีการศึกษา) */
-    const [yearLevelStats] = await connection.execute(`
-      SELECT 
-        s.scho_year,
-        st.std_year,
-        COUNT(*) AS total
-      FROM enroll e
-      JOIN student st ON e.std_id = st.std_id
-      JOIN scholarship_info s ON e.scho_id = s.scholarship_id
-      WHERE e.enroll_status = 1
-      GROUP BY s.scho_year, st.std_year
-      ORDER BY s.scho_year DESC, st.std_year ASC
-    `);
 
     /* จำนวนสมัครทุนในแต่ละปี */
     const [enrollByYear] = await connection.execute(`
@@ -83,19 +62,6 @@ export const getAdminDashboard = async (req, res) => {
     ORDER BY s.scho_year
     `);
 
-    const [[{ current_year }]] = await connection.execute(`
-    SELECT MAX(scho_year) AS current_year FROM scholarship_info
-    `);
-
-    const [currentYearLevelStats] = await connection.execute(`
-    SELECT st.std_year, COUNT(DISTINCT e.std_id) AS total
-    FROM enroll e
-    JOIN student st ON e.std_id = st.std_id
-    JOIN scholarship_info s ON e.scho_id = s.scholarship_id
-    WHERE e.enroll_status = 1 AND s.scho_year = ?
-    GROUP BY st.std_year
-    ORDER BY st.std_year`, 
-    [current_year]);
 
     /* bookmark */
     const [bookmarkStats] = await pool.execute(`
@@ -118,9 +84,6 @@ export const getAdminDashboard = async (req, res) => {
       total_enroll,
       total_students,
       no_scholarship,
-      yearLevelStats,
-      current_year,
-      currentYearLevelStats,
       enrollByYear,
       studentByYear,
       bookmarkStats

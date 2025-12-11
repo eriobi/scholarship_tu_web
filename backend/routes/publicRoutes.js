@@ -30,10 +30,7 @@ router.get("/bookmarks", verifyRoleStd, getBookmarks);
 router.post("/scholarships/:id/bookmark", verifyRoleStd, toggleBookmarks);
 router.post("/scholarships/:id/enroll", verifyRoleStd, enroll);
 
-/**
- * สมัครรับข้อมูลทุน (เธอเพิ่ม)
- * - ต้อง login + เป็น role นักศึกษา
- */
+
 router.post(
   "/scholarships/:id/request-info",
   verifyToken,

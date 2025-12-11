@@ -11,7 +11,6 @@ import {
 
 const router = express.Router();
 
-// base path = /api/admin/notifications
 router.get("/", verifyToken, getAdminNotifications);
 router.get("/unread-count", verifyToken, getAdminUnreadCount);
 router.post("/mark-read", verifyToken, markAllAdminRead);

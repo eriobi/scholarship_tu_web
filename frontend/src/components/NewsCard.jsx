@@ -38,11 +38,18 @@ function NewsCard() {
         <div
           key={content.news_id}
           onClick={() => openModal(content)}
-          className="w-full min-h-20 cursor-pointer relative flex items-center mt-2 mb-6 bg-white shadow-sm border border-slate-200 rounded-lg"
+          className="w-full cursor-pointer flex flex-col mt-2 mb-6 bg-white shadow-sm border border-slate-200 rounded-lg p-4"
         >
-          <h2 className="p-4 font-semibold text-gray-800 item-center text-base">
+          {/* หัวข้อข่าว */}
+          <h2 className="font-semibold text-gray-800 text-base">
             {content.news_title}
           </h2>
+
+          {/* วันที่ประกาศ - แสดงใต้หัวข้อ */}
+          <p className="text-xs text-gray-500 mt-1">
+            วันที่ประกาศ:{" "}
+            {new Date(content.created_at).toLocaleDateString("th-TH")}
+          </p>
         </div>
       ))}
 
@@ -60,9 +67,8 @@ function NewsCard() {
 
             {/* ปุ่มโหลด PDF */}
             {selectedNews.news_file && (
-              
               <a
-               href={`http://localhost:5100/uploads/news/${selectedNews.news_file}`}
+                href={`http://localhost:5100/uploads/news/${selectedNews.news_file}`}
                 target="_blank"
                 rel="noreferrer"
                 className="block w-full mt-4 px-4 py-2 rounded-lg bg-[#219B9D] text-white text-center hover:bg-[#08595b]"

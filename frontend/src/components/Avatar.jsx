@@ -11,28 +11,32 @@ const colors = [
   "#FF7043", // orange
 ];
 
+/* กำหนดให้สีเดียวชื่อเดียวกัน */
 function getColorFromName(name) {
-  let hash = 0;
+  let hash = 0; //เก็บ ASCII 
+
+  /* loop ดึง char แล้วแปลงเป็น ASCII แล้วไปผสมเลขแบบกระจาย  hash * 31 */
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
-  return colors[Math.abs(hash) % colors.length];
+  return colors[Math.abs(hash) % colors.length]; //Math.abs = เลขบวก % colors.length  หารเอาเศษด้วยจำนวนสี
 }
 
-// รองรับภาษาไทย
+/* รองรับภาษาไทย */
 function getInitial(name) {
   if (!name) return "?";
 
-  const cleaned = name.trim().normalize("NFC");
-
+  const cleaned = name.trim().normalize("NFC"); //NFC พยายามรวม ตัวอักษร + สระรวมกันเป็นโค้ดยูนิตเดี่ยว
+ 
+  //loop unicode code point
   for (const char of cleaned) {
-    // ถ้าไม่ใช่ตัวผสม (สระลอย)
-    if (!/[\u0E31-\u0E4E]/.test(char)) {
+   /*  ถ้าตัวอักษรแรกจะไม่มีสระ จะให้เป็นตัวใหญ่(ไทยไม่เปลี่ยนรูปแบบ) */
+    if (!/[\u0E31-\u0E4E]/.test(char)) { 
       return char.toUpperCase();
     }
   }
-  return "?";
-}
+  return "?"; //ถ้าเจอสระลอย จะข้ามจนกว่าจะเจอตัวอักษร
+} 
 
 export default function Avatar({ name = "", size = 120 }) {
   const initial = getInitial(name);

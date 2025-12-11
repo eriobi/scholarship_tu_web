@@ -108,7 +108,7 @@ function Register() {
                 setInputData({ ...inputData, StdId: e.target.value })
               }
             />
-            
+
             <InputBox
               id="year"
               label="ชั้นปีที่"
@@ -149,18 +149,27 @@ function Register() {
                 setInputData({ ...inputData, income: e.target.value })
               }
             />
-          
-             <InputBox
+
+            <InputBox
               id="scholarship_interest"
               label="ความสนใจในการสมัครทุน"
               type="number"
               name="scholarship_interest"
               placeholder=""
               autoComplete="off"
-              options={["1", "2", "3", "4","5"]}
+              options={[
+                { label: "⭐", value: 1 },
+                { label: "⭐⭐", value: 2 },
+                { label: "⭐⭐⭐", value: 3 },
+                { label: "⭐⭐⭐⭐", value: 4 },
+                { label: "⭐⭐⭐⭐⭐", value: 5 },
+              ]}
               value={inputData.scholarship_interest}
               onChange={(e) =>
-                setInputData({ ...inputData, scholarship_interest: e.target.value })
+                setInputData({
+                  ...inputData,
+                  scholarship_interest: e.target.value,
+                })
               }
             />
             <InputBox

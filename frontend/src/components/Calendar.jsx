@@ -216,7 +216,7 @@ function Calender() {
         </div>
       </div>
       {popup &&
-      /* ให้อยู่เหนือ layer ตาราง */
+      /* ให้อยู่เหนือ layer ตาราง createPortal ย้ายlayer ที่ไม่ใช่ layer หลัก*/
         createPortal(
           <div
             className="fixed bg-white shadow-md p-2 rounded w-40 text-sm"
@@ -232,7 +232,7 @@ function Calender() {
               <p key={e.scholarship_id}>• {e.scho_name}</p>
             ))}
           </div>,
-          document.body
+          document.body //document.body=  layer บนสุด
         )}
     </section>
   );

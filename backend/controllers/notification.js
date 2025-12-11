@@ -1,7 +1,6 @@
-// backend/controllers/notification.js
+
 import pool from "../pool.js";
 
-// 1) ดึง list การแจ้งเตือนของนักศึกษาที่ล็อกอิน
 export const getStudentNotifications = async (req, res) => {
   try {
     const userId = req.user.user_id || req.user.id;
@@ -28,7 +27,6 @@ export const getStudentNotifications = async (req, res) => {
   }
 };
 
-// 2) จำนวนแจ้งเตือนที่ยังไม่อ่าน
 export const getUnreadCount = async (req, res) => {
   try {
     const userId = req.user.user_id || req.user.id;
@@ -55,7 +53,6 @@ export const getUnreadCount = async (req, res) => {
   }
 };
 
-// 3) mark ว่าทุกอันอ่านแล้ว
 export const markAllRead = async (req, res) => {
   try {
     const userId = req.user.user_id || req.user.id;
@@ -78,7 +75,6 @@ export const markAllRead = async (req, res) => {
   }
 };
 
-//  4) mark แจ้งเตือนตัวเดียวว่าอ่านแล้ว
 export const markOneRead = async (req, res) => {
   try {
     const userId = req.user.user_id || req.user.id;
@@ -102,7 +98,6 @@ export const markOneRead = async (req, res) => {
   }
 };
 
-// 5) ลบแจ้งเตือน 1 อัน (ของ นศ. คนนี้เท่านั้น)
 export const deleteStudentNotification = async (req, res) => {
   const notiId = req.params.id;
   const userId = req.user.user_id || req.user.id;

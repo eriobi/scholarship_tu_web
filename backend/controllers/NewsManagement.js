@@ -1,4 +1,4 @@
-// backend/controllers/NewsManagement.js
+
 import pool from "../pool.js";
 import multer from "multer";
 import path from "path";
@@ -15,7 +15,7 @@ export const uploadNewsFile = multer({ storage }).single("news_file");
 let connection;
 
 /* ===================== get news ===================== */
-/* ใช้ได้ทั้งหน้า user / admin ตามที่เดิมใช้อยู่ */
+
 export const getNews = async (req, res) => {
   try {
     const [row] = await pool.execute(
@@ -53,8 +53,7 @@ export const createNews = async (req, res) => {
       true,
     ]);
     const newsId = newsResult.insertId;
-
-    // 2) พยายามสร้าง notification ให้ นศ. ทุกคน
+    
     try {
       await connection.execute(
         `INSERT INTO std_notification (student_id, std_noti_type, is_read)

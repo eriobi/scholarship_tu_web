@@ -17,6 +17,7 @@ export const getAllScholarship = async (req, res) => {
         s.start_date,
         s.end_date,
         s.scho_desp,
+        s.scho_file,
         s.is_active,
         q.qua_id,
         q.std_year,
@@ -85,71 +86,42 @@ export const requestScholarshipInfo = async (req, res) => {
       return res.status(404).json({ message: "ไม่พบนักศึกษา/ทุน" });
     }
 
-    // -----------------------------
-    // 3) ตรวจเงื่อนไขคุณสมบัติ
-    //    (null หรือ 0 = ไม่กำหนดเงื่อนไข)
-    // -----------------------------
-    const normalizeNumber = (v) => {
-      if (v == null) return null;
-      const n = Number(v);
-      return Number.isNaN(n) ? null : n;
-    };
+    const reqYear = scholar.req_year; 
+    const reqGpa = scholar.req_gpa;
+    const reqIncome = Number(scholar.req_income);
+    const studentYear = student.std_year;
+    const studentGpa = student.std_gpa;
+    const studentIncome = student.std_income;
 
-    const reqYear = normalizeNumber(scholar.req_year);
-    const reqGpa = normalizeNumber(scholar.req_gpa);
-
-    const passYear =
-      reqYear == null || reqYear === 0 || student.std_year === reqYear;
-
-    const passGpa =
-      reqGpa == null || reqGpa === 0 || student.std_gpa >= reqGpa;
-
-    // ---- แปลงเงื่อนไขรายได้ให้เป็นตัวเลข / null ----
-    let reqIncome = scholar.req_income;
-
-    if (reqIncome != null) {
-      if (typeof reqIncome === "string") {
-        // ตัด comma แล้วดึงตัวเลข เช่น "100000-200,000" -> ["100000","200000"]
-        const cleaned = reqIncome.replace(/,/g, "").trim();
-        const matches = cleaned.match(/\d+(\.\d+)?/g);
-
-        if (matches && matches.length > 0) {
-          const lastNum = Number(matches[matches.length - 1]);
-          reqIncome = Number.isNaN(lastNum) ? null : lastNum;
-        } else {
-          // ไม่มีตัวเลขเลย เช่น "ไม่ได้ระบุชัดเจน" -> ถือว่าไม่จำกัดรายได้
-          reqIncome = null;
-        }
-      } else if (typeof reqIncome === "number") {
-        // ใช้ได้เลย
-      } else {
-        reqIncome = null;
+    if (reqYear < 0) {
+      // รับเฉพาะชั้นปีที่กำหนด เช่น -1 = รับเฉพาะปี 1
+      const exact = Math.abs(reqYear);
+      if (studentYear !== exact) {
+        return res.status(400).json({
+          message: `รับเฉพาะนักศึกษาชั้นปี ${exact} เท่านั้น`
+        });
+      }
+    } else {
+      if (studentYear < reqYear) {
+        return res.status(400).json({
+          message: `ชั้นปีไม่ถึงเกณฑ์ (ต้องเป็นปี ${reqYear} ขึ้นไป)`
+        });
       }
     }
 
-    // 0 = ไม่จำกัดรายได้
-    if (reqIncome === 0) {
-      reqIncome = null;
-    }
-
-    // แปลงรายได้ นศ. เป็นตัวเลข (กันเคสเป็น string)
-    let studentIncome = null;
-    if (student.std_income != null) {
-      const num = Number(student.std_income);
-      studentIncome = Number.isNaN(num) ? null : num;
-    }
-
-    const passIncome =
-      reqIncome == null ||
-      (studentIncome != null && studentIncome <= reqIncome);
-
-    if (!passYear || !passGpa || !passIncome) {
+    if (studentGpa < reqGpa) {
       return res.status(400).json({
-        message: "คุณไม่ตรงเงื่อนไขทุนนี้ ไม่สามารถขอรายละเอียดได้",
+        message: "GPA ไม่ถึงเกณฑ์"
       });
     }
 
-    // 4) ยังไม่ได้ผูก LINE → แจ้งกลับ frontend เลย
+    if (reqIncome > 0 && studentIncome > reqIncome) {
+      return res.status(400).json({
+        message: "รายได้มากกว่าเกณฑ์ที่กำหนด"
+      });
+    }
+
+   
     if (!student.line_user_id) {
       return res.status(400).json({
         message:
@@ -158,7 +130,7 @@ export const requestScholarshipInfo = async (req, res) => {
       });
     }
 
-    // helper format date
+    
     const formatDate = (value) => {
       if (!value) return "-";
       const d = value instanceof Date ? value : new Date(value);
@@ -170,24 +142,8 @@ export const requestScholarshipInfo = async (req, res) => {
       });
     };
 
-    // ------ สร้างข้อความเงื่อนไขให้สวยงาม ------
-    const yearText =
-      reqYear == null || reqYear === 0 ? "ทุกชั้นปี" : String(reqYear);
 
-    const gpaText =
-      reqGpa == null || reqGpa === 0 ? "-" : String(reqGpa);
-
-    let incomeText = "-";
-    if (scholar.req_income != null) {
-      if (reqIncome != null) {
-        incomeText = `${reqIncome.toLocaleString("th-TH")} บาท/ปี`;
-      } else {
-        // parse ไม่ได้ เช่น "ไม่ได้ระบุชัดเจน" หรือ 0 -> แสดงข้อความเดิม
-        incomeText = String(scholar.req_income);
-      }
-    }
-
-    // 5) ข้อความ “รายละเอียดทุน” ที่จะส่งไป LINE
+  
     const detailText =
       `รายละเอียดทุนการศึกษา\n\n` +
       `ชื่อทุน: ${scholar.scho_name}\n` +
@@ -203,13 +159,13 @@ export const requestScholarshipInfo = async (req, res) => {
       `- รายได้ไม่เกิน: ${incomeText}\n\n` +
       `กรุณาเข้าสู่ระบบเว็บไซต์ทุนการศึกษาเพื่อดูรายละเอียดเพิ่มเติมและดำเนินการสมัครค่ะ`;
 
-    // 6) ส่งข้อความไป LINE ของ นศ.
+   
     await lineClient.pushMessage(student.line_user_id, {
       type: "text",
       text: detailText,
     });
 
-    // 7) พยายามบันทึก noti ฝั่ง นศ.
+   
     try {
       await pool.execute(
         `
@@ -222,10 +178,10 @@ export const requestScholarshipInfo = async (req, res) => {
       );
     } catch (e) {
       console.error("insert std_notification error:", e);
-      // ไม่ throw ต่อ เพื่อไม่ให้ frontend ได้ 500
+      
     }
 
-    // 8) พยายามบันทึก noti ฝั่ง Admin
+    
     try {
       await pool.execute(
         `
@@ -240,7 +196,7 @@ export const requestScholarshipInfo = async (req, res) => {
       console.error("insert admin_notification error:", e);
     }
 
-    // 9) ตอบกลับให้ frontend รู้ว่า success
+   
     return res.json({
       message: `ระบบได้ส่งรายละเอียดทุน "${scholar.scho_name}" ไปที่ LINE ของคุณแล้ว`,
     });

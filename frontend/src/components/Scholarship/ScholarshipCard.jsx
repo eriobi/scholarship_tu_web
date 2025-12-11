@@ -133,13 +133,8 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
     }
   };
 
-  /* ---------- แสดงสถิติ ---------- */
+  /*  แสดงสถิติ คนที่ไม่ได้ log in ดูได้ */
   const showStats = async (id) => {
-    if (!token) {
-      alert("กรุณาล็อกอินก่อน");
-      return;
-    }
-
     try {
       const res = await axiosInstance.get(`/api/scholarships/${id}/stats`, {
         headers: {
@@ -244,7 +239,7 @@ function ScholarshipCard({ scholarship, bookmarked, onBookmark, onEnroll }) {
               ชั้นปีที่ <span className="text-black">{formatStdYear(std_year)}</span>
             </p>
             <p className="mb-1">
-              รายได้ขั้นต่ำ <span className="text-black">{std_income}</span>
+              รายได้ขั้นต่ำ <span className="text-black">{std_income} บาท/ปี</span>
             </p>
             <p className="mb-1">
               เปิดรับ{" "}

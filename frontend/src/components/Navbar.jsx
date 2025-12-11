@@ -13,10 +13,8 @@ function NavbarTest() {
   const [openDropdown, setOpenDropdown] = useState(false);
   const hoverTimer = useRef(null);
 
-  // จำนวนแจ้งเตือนที่ยังไม่อ่าน (ใช้ได้ทั้ง student + admin)
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // 1. ดึงข้อมูล user จาก /navbar
   useEffect(() => {
     if (!token) return;
 
@@ -35,9 +33,6 @@ function NavbarTest() {
     fetchUser();
   }, [token, setUser]);
 
-  // 2.ดึงจำนวน noti ที่ยังไม่อ่าน
-  //    student  -> /api/notifications/student
-  //    admin    -> /api/admin/notifications/unread-count
   useEffect(() => {
     if (!token || !user?.role) {
       setUnreadCount(0);
@@ -46,7 +41,7 @@ function NavbarTest() {
 
     const fetchUnread = async () => {
       try {
-        // นศ
+        /* นศ */
         if (user.role === "student") {
           const res = await axiosInstance.get("/api/notifications/student", {
             headers: { Authorization: `Bearer ${token}` },
@@ -68,7 +63,7 @@ function NavbarTest() {
           setUnreadCount(count);
         }
 
-        //จนท
+        /* จนท */
         if (user.role === "admin") {
           const res = await axiosInstance.get(
             "/api/admin/notifications/unread-count",

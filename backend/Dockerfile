@@ -7,7 +7,7 @@ WORKDIR /app
 # ติดตั้ง dependency
 COPY package*.json ./
 RUN npm install
-RUN npm install -g nodemon
+#RUN npm install -g nodemon
 
 # ก็อปโค้ดทั้งหมดเข้า container
 COPY . .

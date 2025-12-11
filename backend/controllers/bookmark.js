@@ -22,9 +22,9 @@ export const getBookmarks = async (req, res) => {
     /* เรียก scholarships ที่ bookmarks(ตาราง)  */
     const [rows] = await connection.execute(
       `SELECT b.scho_id, s.* 
-   FROM bookmark b
-   JOIN scholarship_info s ON b.scho_id = s.scholarship_id
-   WHERE b.student_id = ? AND b.is_active = 1`,
+        FROM bookmark b
+        JOIN scholarship_info s ON b.scho_id = s.scholarship_id
+        WHERE b.student_id = ? AND b.is_active = 1`,
       [student_id]
     );
 

@@ -139,47 +139,49 @@ function NotiAdmin() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-4">
-      <h1 className="text-xl font-semibold mb-4">
-        การแจ้งเตือนของเจ้าหน้าที่
-      </h1>
+    <div className="p-4 bg-gray-50">
+      <div className="max-w-3xl mx-auto p-4">
+        <h2 className="text-lg font-semibold text-center px-8 text-gray-900 p-8">
+          การแจ้งเตือนของเจ้าหน้าที่
+        </h2>
 
-      <ul className="space-y-3">
-        {notifications.map((noti) => (
-          <li
-            key={noti.adm_noti_id}
-            onClick={() => handleClickNotification(noti)}
-            className="border rounded-lg p-3 bg-white shadow-sm flex justify-between items-start text-sm cursor-pointer hover:bg-gray-50"
-          >
-            <div>
-              {/* ข้อความหลัก: รวมชื่อ + รหัสนักศึกษา + ชื่อ LINE */}
-              <div className="font-medium">{getAdminNotiLabel(noti)}</div>
+        <ul className="space-y-3">
+          {notifications.map((noti) => (
+            <li
+              key={noti.adm_noti_id}
+              onClick={() => handleClickNotification(noti)}
+              className="border border-slate-200 rounded-lg p-3 bg-white shadow-sm flex justify-between items-start text-sm cursor-pointer hover:bg-gray-50"
+            >
+              <div>
+                {/* ข้อความหลัก: รวมชื่อ + รหัสนักศึกษา + ชื่อ LINE */}
+                <div className="font-medium">{getAdminNotiLabel(noti)}</div>
 
-              {/* เวลา */}
-              <div className="text-gray-500 text-xs mt-1">
-                {new Date(noti.created_at).toLocaleString("th-TH")}
+                {/* เวลา */}
+                <div className="text-gray-500 text-xs mt-1">
+                  {new Date(noti.created_at).toLocaleString("th-TH")}
+                </div>
               </div>
-            </div>
 
-            <div className="flex items-center gap-2">
-              {/* badge ยังไม่อ่าน */}
-              {!noti.is_read && (
-                <span className="text-xs bg-red-500 text-white rounded-full px-2 py-0.5">
-                  ยังไม่อ่าน
-                </span>
-              )}
+              <div className="flex items-center gap-2">
+                {/* badge ยังไม่อ่าน */}
+                {!noti.is_read && (
+                  <span className="text-xs bg-red-500 text-white rounded-full px-2 py-0.5">
+                    ยังไม่อ่าน
+                  </span>
+                )}
 
-              {/* ปุ่มลบ */}
-              <button
-                onClick={(e) => handleDeleteNotification(noti, e)}
-                className="text-xs border border-red-400 text-red-500 rounded-full px-3 py-0.5 hover:bg-red-50"
-              >
-                ลบ
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
+                {/* ปุ่มลบ */}
+                <button
+                  onClick={(e) => handleDeleteNotification(noti, e)}
+                  className="text-xs border border-red-400 text-red-500 rounded-full px-3 py-0.5 hover:bg-red-50"
+                >
+                  ลบ
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

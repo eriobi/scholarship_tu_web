@@ -67,8 +67,8 @@ const StudentManagement = () => {
           onChange={(e) => setFilterInterest(e.target.value)}
         >
           <option value="">เรียงลำดับความสนใจทุน</option>
-          <option value="desc">สนใจสมัครทุนมากที่สุด</option>
-          <option value="asc">สนใจสมัครทุนน้อยที่สุด</option>
+          <option value="desc">สนใจสมัครทุนมากไปน้อย</option>
+          <option value="asc">สนใจสมัครทุนน้อยไปมาก</option>
         </select>
       </div>
 
